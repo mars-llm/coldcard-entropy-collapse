@@ -261,19 +261,30 @@ export function EntropyStudy() {
             <div>
               <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">For affected owners</p>
               <h2 className="mt-2 font-serif text-2xl text-white">Own an affected COLDCARD?</h2>
-              <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">
-                Coinkite&apos;s official advisory has the current migration guidance.
+              <p className="mt-2 max-w-2xl font-sans text-sm leading-relaxed text-ink-muted">
+                Fixed firmware is now available: Mk3 4.2.0, Mk4/Mk5 5.6.0, Q 1.5.0Q, and Edge 6.6.0X or 6.6.0QX. Install the correct release before creating a replacement seed. Updating does not repair an existing seed, so follow Coinkite&apos;s migration guidance.
               </p>
             </div>
-            <a
-              href="https://blog.coinkite.com/coldcard-mk3-seed-generation-warning/"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex min-h-12 items-center justify-center gap-3 bg-white px-5 font-mono text-[9px] uppercase tracking-[0.15em] text-black transition-colors hover:bg-ink"
-            >
-              Open the official advisory
-              <ExternalLink size={13} aria-hidden="true" />
-            </a>
+            <div className="flex flex-col gap-2 sm:items-stretch">
+              <a
+                href="https://blog.coinkite.com/coldcard-mk3-seed-generation-warning/"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-12 items-center justify-center gap-3 bg-white px-5 font-mono text-[9px] uppercase tracking-[0.15em] text-black transition-colors hover:bg-ink"
+              >
+                Read migration guidance
+                <ExternalLink size={13} aria-hidden="true" />
+              </a>
+              <a
+                href="https://coldcard.com/downloads/"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-12 items-center justify-center gap-3 border border-white/40 px-5 font-mono text-[9px] uppercase tracking-[0.15em] text-white transition-colors hover:border-white"
+              >
+                Official firmware downloads
+                <ExternalLink size={13} aria-hidden="true" />
+              </a>
+            </div>
           </div>
         </section>
 
@@ -297,7 +308,7 @@ export function EntropyStudy() {
                 The original fault was in seed generation. An air gap, a secure element, or a durable backup can protect against other failures, but none can change a wallet&apos;s starting randomness after it has been created.
               </p>
               <p>
-                The published scope is still being checked. Block says it has not completed full empirical exploitability testing, and Coinkite describes its analysis as early and ongoing. Treat model-specific estimates as provisional and use the current official advisory for your device, firmware, and seed-creation method.
+                Coinkite estimates roughly 40 bits of entropy for Mk3 seeds created on versions 4.0.1 through 4.1.9, and as little as 72 bits for affected Mk4, Mk5, and Q seeds. Its investigation remains ongoing, so treat model-specific search estimates as provisional and use the current official advisory for your device, firmware, and seed-creation method.
               </p>
               <p>
                 A recovered seed can identify addresses and activity from that wallet. That can reduce privacy in a CoinJoin or PayJoin when an affected participant&apos;s outputs are identified. It does not automatically identify every other participant or make every past transaction public.
@@ -313,6 +324,7 @@ export function EntropyStudy() {
               <SourceLink label="Block analysis" href="https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware" />
               <SourceLink label="Coinkite backgrounder" href="https://blog.coinkite.com/entropy-technical-backgrounder/" />
               <SourceLink label="Coinkite migration advisory" href="https://blog.coinkite.com/coldcard-mk3-seed-generation-warning/" />
+              <SourceLink label="Official firmware downloads" href="https://coldcard.com/downloads/" />
               <SourceLink label="COLDCARD firmware source" href="https://github.com/Coldcard/firmware" />
               <SourceLink label="Bitcoin.org Android RNG alert" href="https://bitcoin.org/en/alert/2013-08-11-android" />
               <SourceLink label="BIP-39 specification" href="https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki" />
