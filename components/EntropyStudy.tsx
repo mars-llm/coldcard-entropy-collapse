@@ -297,6 +297,15 @@ export function EntropyStudy() {
                 The original fault was in seed generation. An air gap, a secure element, or a durable backup can protect against other failures, but none can change a wallet&apos;s starting randomness after it has been created.
               </p>
               <p>
+                The published scope is still being checked. Block says it has not completed full empirical exploitability testing, and Coinkite describes its analysis as early and ongoing. Treat model-specific estimates as provisional and use the current official advisory for your device, firmware, and seed-creation method.
+              </p>
+              <p>
+                A recovered seed can identify addresses and activity from that wallet. That can reduce privacy in a CoinJoin or PayJoin when an affected participant&apos;s outputs are identified. It does not automatically identify every other participant or make every past transaction public.
+              </p>
+              <p>
+                In a shared wallet, one recovered key alone cannot spend from a policy that still needs a separate uncompromised key. Risk changes when the affected keys can satisfy a normal or recovery path, including a Miniscript path once its conditions are met.
+              </p>
+              <p>
                 The links below include the published analyses, the official migration advisory, firmware source, and the on-chain records discussed by researchers.
               </p>
             </div>
