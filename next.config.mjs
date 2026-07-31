@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
-  basePath: process.env.NODE_ENV === 'production' ? '/entropy-collapse' : '',
+  basePath: process.env.NODE_ENV === 'production' ? '/coldcard-entropy-collapse' : '',
   trailingSlash: true,
   images: {
     unoptimized: true,

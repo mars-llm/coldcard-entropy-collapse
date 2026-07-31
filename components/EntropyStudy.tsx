@@ -307,7 +307,7 @@ export function EntropyStudy() {
       </main>
 
       <footer className="flex flex-col gap-2 px-4 py-4 font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted sm:flex-row sm:items-center sm:justify-between md:px-8">
-        <span>Independent educational explanation. Not affiliated with Coinkite or COLDCARD.</span>
+        <span>Unaffiliated with Coinkite or COLDCARD.</span>
         <span>Developed by Marsmensch, 2026.</span>
       </footer>
     </div>
