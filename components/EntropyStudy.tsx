@@ -19,22 +19,22 @@ const STAGES = [
     label: '1',
     nav: 'Create a secret',
     title: 'A cold wallet starts by making a secret.',
-    body: 'It uses randomness to create the recovery phrase and the keys that follow from it.',
-    action: 'Continue',
+    body: 'The small model below starts with a simulated secret, made from randomness.',
+    action: 'Start the walkthrough',
   },
   {
     label: '2',
     nav: 'Weak fallback',
     title: 'Affected firmware could fall back to weak randomness.',
-    body: 'The wallet still produced a recovery phrase, but the number of possible secrets was too small.',
-    action: 'Continue',
+    body: 'In the model, that leaves only 64 possible simulated secrets to try.',
+    action: 'Show the fallback',
   },
   {
     label: '3',
     nav: 'Test a guess',
     title: 'A public address can confirm a recreated secret.',
-    body: 'An attacker tries each possible secret and checks the resulting address. A match identifies the wallet.',
-    action: 'Run the example',
+    body: 'Run the model to test all 64 simulated secrets against the public pattern.',
+    action: 'Run the 64 guesses',
   },
 ] as const;
 
@@ -154,6 +154,14 @@ export function EntropyStudy() {
               <p className="mt-4 max-w-2xl font-sans text-sm leading-relaxed text-ink-muted">
                 Cold storage keeps a wallet&apos;s secret offline. It cannot protect a secret that was predictable when the wallet created it. This case study explains the seed-generation fault found in affected COLDCARD firmware after a coordinated sweep on 30 July 2026.
               </p>
+              <button
+                type="button"
+                onClick={() => selectStage(2)}
+                className="mt-6 inline-flex min-h-12 items-center gap-3 border border-accent bg-accent px-5 font-mono text-[9px] uppercase tracking-[0.15em] text-white transition-colors hover:border-white hover:bg-canvas"
+              >
+                Try the 64-guess demo
+                <ArrowRight size={14} aria-hidden="true" />
+              </button>
             </header>
 
             <div className="mt-10 border-y border-white/15">
@@ -188,7 +196,7 @@ export function EntropyStudy() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: shouldReduceMotion ? 0 : 0.2 }}
                 >
-                  <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">Step {currentStage.label} of 3</p>
+                  <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">Interactive model / step {currentStage.label} of 3</p>
                   <h2 className="mt-3 max-w-2xl font-serif text-2xl leading-snug text-white sm:text-3xl">
                     {currentStage.title}
                   </h2>
@@ -283,7 +291,7 @@ export function EntropyStudy() {
           <div className="mx-auto max-w-6xl border-t border-white/10 py-7">
             <div className="max-w-3xl space-y-4 font-sans text-sm leading-relaxed text-ink-muted">
               <p>
-                This model uses SHA-256 and 64 toy beginnings. It does not create wallet material, derive Bitcoin addresses, or reproduce COLDCARD firmware.
+                The working model above uses SHA-256 to simulate 64 possible starting secrets, then compares each one with a public pattern. It never handles wallet material or derives Bitcoin addresses.
               </p>
               <p>
                 The original fault was in seed generation. An air gap, a secure element, or a durable backup can protect against other failures, but none can change a wallet&apos;s starting randomness after it has been created.
