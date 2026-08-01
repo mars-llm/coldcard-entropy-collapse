@@ -4,7 +4,7 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Entropy Collapse | Cold storage security case study',
-  description: 'An independent visual explanation of how a weak random-number fallback affected COLDCARD seed generation on 30 July 2026.',
+  description: 'A visual explanation of how a weak random-number fallback affected COLDCARD seed generation, why an offline wallet could still be exposed, and what affected owners should do.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

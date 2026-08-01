@@ -33,7 +33,7 @@ const STAGES = [
     label: '3',
     nav: 'Test a guess',
     title: 'A public address can confirm a recreated secret.',
-    body: 'Run the model to test all 64 simulated secrets against the public pattern.',
+    body: 'Run the model through all 64 simulated secrets. The public address is enough to check each guess.',
     action: 'Run the 64 guesses',
   },
 ] as const;
@@ -146,7 +146,7 @@ export function EntropyStudy() {
           <div className="mx-auto max-w-6xl">
             <header className="max-w-3xl">
               <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-accent">
-                Cold storage security case study / 30 July 2026
+                Cold storage security case study / Updated 2 August 2026
               </p>
               <h1 className="mt-4 font-serif text-3xl leading-tight text-white sm:text-4xl lg:text-5xl">
                 How a weak random-number fallback exposed cold wallets.
@@ -251,40 +251,61 @@ export function EntropyStudy() {
             </div>
 
             <p className="mt-7 max-w-3xl border-l-2 border-accent pl-4 font-serif text-lg leading-relaxed text-ink">
-              The wallet can stay offline. If someone can recreate its starting secret, they can recreate its keys elsewhere.
+              The wallet can stay offline. If someone can recreate its starting secret, they can recreate its keys elsewhere. The search leaves no warning on the device.
             </p>
           </div>
         </section>
 
         <section id="owner-guidance" className="border-y border-accent/60 bg-accent/[0.10] px-4 py-10 md:px-8">
-          <div className="mx-auto grid max-w-6xl gap-5 sm:grid-cols-[1fr_auto] sm:items-center">
-            <div>
-              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">For affected owners</p>
-              <h2 className="mt-2 font-serif text-2xl text-white">Own an affected COLDCARD?</h2>
-              <p className="mt-2 max-w-2xl font-sans text-sm leading-relaxed text-ink-muted">
-                Fixed firmware is now available: Mk3 4.2.0, Mk4/Mk5 5.6.0, Q 1.5.0Q, and Edge 6.6.0X or 6.6.0QX. Install the correct release before creating a replacement seed. Updating does not repair an existing seed, so follow Coinkite&apos;s migration guidance.
-              </p>
+          <div className="mx-auto max-w-6xl">
+            <div className="grid gap-5 sm:grid-cols-[1fr_auto] sm:items-center">
+              <div>
+                <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">For affected owners</p>
+                <h2 className="mt-2 font-serif text-2xl text-white">Was your seed created on affected firmware?</h2>
+                <p className="mt-2 max-w-2xl font-sans text-sm leading-relaxed text-ink-muted">
+                  The version used to create the seed matters—not the version installed today. Affected seeds include Mk2/Mk3 4.0.1–4.1.9, Mk4/Mk5 before standard 5.6.0 or Edge 6.6.0X, and Q before standard 1.5.0Q or Edge 6.6.0QX.
+                </p>
+              </div>
+              <div className="flex flex-col gap-2 sm:items-stretch">
+                <a
+                  href="https://blog.coinkite.com/coldcard-mk3-seed-generation-warning/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex min-h-12 items-center justify-center gap-3 bg-white px-5 font-mono text-[9px] uppercase tracking-[0.15em] text-black transition-colors hover:bg-ink"
+                >
+                  Read migration guidance
+                  <ExternalLink size={13} aria-hidden="true" />
+                </a>
+                <a
+                  href="https://coldcard.com/downloads/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex min-h-12 items-center justify-center gap-3 border border-white/40 px-5 font-mono text-[9px] uppercase tracking-[0.15em] text-white transition-colors hover:border-white"
+                >
+                  Official firmware downloads
+                  <ExternalLink size={13} aria-hidden="true" />
+                </a>
+              </div>
             </div>
-            <div className="flex flex-col gap-2 sm:items-stretch">
-              <a
-                href="https://blog.coinkite.com/coldcard-mk3-seed-generation-warning/"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex min-h-12 items-center justify-center gap-3 bg-white px-5 font-mono text-[9px] uppercase tracking-[0.15em] text-black transition-colors hover:bg-ink"
-              >
-                Read migration guidance
-                <ExternalLink size={13} aria-hidden="true" />
-              </a>
-              <a
-                href="https://coldcard.com/downloads/"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex min-h-12 items-center justify-center gap-3 border border-white/40 px-5 font-mono text-[9px] uppercase tracking-[0.15em] text-white transition-colors hover:border-white"
-              >
-                Official firmware downloads
-                <ExternalLink size={13} aria-hidden="true" />
-              </a>
-            </div>
+
+            <dl className="mt-8 grid border-t border-accent/35 sm:grid-cols-3">
+              <div className="border-b border-accent/25 py-5 sm:border-b-0 sm:border-r sm:pr-5">
+                <dt className="font-serif text-base text-white">Fewer than 50 private dice rolls—or not sure</dt>
+                <dd className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">Create a new seed on fixed firmware and migrate promptly.</dd>
+              </div>
+              <div className="border-b border-accent/25 py-5 sm:border-b-0 sm:border-r sm:px-5">
+                <dt className="font-serif text-base text-white">At least 50 fair, independent dice rolls</dt>
+                <dd className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">If the rolls stayed private, Coinkite does not consider that seed at risk from this RNG issue alone.</dd>
+              </div>
+              <div className="py-5 sm:pl-5">
+                <dt className="font-serif text-base text-white">Strong, unique BIP39 passphrase</dt>
+                <dd className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">If the funded wallet uses one, it adds a separate barrier. Replace the affected seed as soon as practical. The COLDCARD PIN is not a passphrase.</dd>
+              </div>
+            </dl>
+
+            <p className="border-t border-accent/35 pt-5 font-sans text-sm leading-relaxed text-ink">
+              Updating fixes future seed generation. It cannot repair a seed that already exists.
+            </p>
           </div>
         </section>
 
@@ -308,16 +329,16 @@ export function EntropyStudy() {
                 The original fault was in seed generation. An air gap, a secure element, or a durable backup can protect against other failures, but none can change a wallet&apos;s starting randomness after it has been created.
               </p>
               <p>
-                Coinkite estimates roughly 40 bits of entropy for Mk3 seeds created on versions 4.0.1 through 4.1.9, and as little as 72 bits for affected Mk4, Mk5, and Q seeds. Its investigation remains ongoing, so treat model-specific search estimates as provisional and use the current official advisory for your device, firmware, and seed-creation method.
+                The published figures describe different assumptions. Coinkite currently estimates about 40 bits for affected Mk2/Mk3 seeds and about 72 bits for Mk4, Mk5, and Q. Block&apos;s 32-bit figure for later models is the secure-element input left once the fallback state and call history are fixed; with unknown timing state, Block gives a loose total ceiling below 73.3 bits. None of these figures is a measured attack time or a safe waiting period.
+              </p>
+              <p>
+                A public address is already enough to check a recreated seed. The full public key does not need to have appeared in an earlier spend. Candidate testing happens offline, so a watch-only wallet cannot show that the search is under way; it can only show a transaction after it is broadcast.
               </p>
               <p>
                 A recovered seed can identify addresses and activity from that wallet. That can reduce privacy in a CoinJoin or PayJoin when an affected participant&apos;s outputs are identified. It does not automatically identify every other participant or make every past transaction public.
               </p>
               <p>
                 In a shared wallet, one recovered key alone cannot spend from a policy that still needs a separate uncompromised key. Risk changes when the affected keys can satisfy a normal or recovery path, including a Miniscript path once its conditions are met.
-              </p>
-              <p>
-                The links below include the published analyses, the official migration advisory, firmware source, and the on-chain records discussed by researchers.
               </p>
             </div>
             <div className="mt-7 grid border-t border-white/10 sm:grid-cols-2">
