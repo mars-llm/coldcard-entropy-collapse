@@ -613,6 +613,21 @@ export function EntropyStudy() {
           </div>
         </section>
 
+        <section id="resilience" className="border-b border-white/10 px-4 py-10 md:px-8 md:py-14">
+          <div className="mx-auto grid max-w-6xl gap-7 lg:grid-cols-[minmax(0,0.8fr)_minmax(28rem,1.2fr)] lg:items-center">
+            <div>
+              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">The wider lesson</p>
+              <h2 className="mt-3 max-w-xl font-serif text-3xl leading-tight text-white">Build your setup so one failure is not enough.</h2>
+            </div>
+
+            <div className="max-w-2xl border-y border-white/15 py-4 lg:justify-self-end">
+              <p className="font-serif text-lg leading-relaxed text-white">
+                Separate the seeds. Separate the dependencies. Test the recovery. Multisig can help, but only when the keys were created independently.
+              </p>
+            </div>
+          </div>
+        </section>
+
         <details id="sources" className="group scroll-mt-20 border-b border-white/10 bg-white/[0.035] px-4 md:px-8">
           <summary className="mx-auto flex min-h-28 max-w-6xl cursor-pointer list-none items-center justify-between gap-6 py-5">
             <div>
@@ -636,7 +651,7 @@ export function EntropyStudy() {
                     After correcting earlier classifications, Alex Thorn reported a separate provisional cluster of 448.73 BTC across 709 addresses on 3 August. He said the earlier set included 89 addresses from multisig transactions that did not belong there. He reported no direct confirmation from affected owners, so this page does not add the cluster to Galaxy&apos;s three-wave total.
                   </p>
                   <p>
-                    Galaxy says its grouping is based on blockchain patterns, not on recreating the seeds. A sweep transaction reflects the software that signed it, not the device that originally created the victim&apos;s seed. The blockchain alone cannot identify a COLDCARD model or firmware version.
+                    Galaxy says Block&apos;s transaction pattern identified the first wave, while reports from victims helped identify waves two and three. That evidence does not reveal or recreate the seeds, and the blockchain alone cannot identify which device or firmware generated one.
                   </p>
                 </div>
               </section>
@@ -725,6 +740,7 @@ export function EntropyStudy() {
                 <div className="mt-3 border-t border-white/10">
                   <SourceLink label="Galaxy: revised first wave" href="https://x.com/glxyresearch/status/2083560956416741448" />
                   <SourceLink label="Galaxy: three-wave estimate" href="https://x.com/glxyresearch/status/2083623500183421043" />
+                  <SourceLink label="Galaxy: how the waves were identified" href="https://x.com/glxyresearch/status/2083967080911470640" />
                   <SourceLink label="Galaxy: limits of the classification" href="https://x.com/glxyresearch/status/2083623504285421622" />
                   <SourceLink label="Alex Thorn: provisional fourth cluster" href="https://x.com/intangiblecoins/status/2084117621864046698" />
                   <SourceLink label="Reported collection address" href="https://mempool.space/address/bc1qnk4zh9qcnap2mycp56qjrgza3cc8ylrh8fecp0" />
