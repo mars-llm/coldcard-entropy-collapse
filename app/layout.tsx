@@ -3,14 +3,14 @@ import { MotionProvider } from '../components/MotionProvider';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Entropy Collapse | Cold storage security case study',
-  description: 'A visual explanation of how a weak random-number fallback affected COLDCARD seed generation, why an offline wallet could still be exposed, and what affected owners should do.',
+  title: 'Entropy Collapse | The COLDCARD seed-generation failure explained',
+  description: 'A visual, beginner-friendly explanation of how affected COLDCARD firmware weakened seed generation, what owners should do, and what the published estimates actually mean.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="antialiased">
-      <body className="min-h-[100dvh] bg-canvas text-ink selection:bg-accent selection:text-white">
+      <body className="min-h-[100dvh] bg-canvas text-ink selection:bg-accent selection:text-canvas">
         <MotionProvider>{children}</MotionProvider>
       </body>
     </html>

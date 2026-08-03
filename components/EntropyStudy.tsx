@@ -18,46 +18,54 @@ const STAGES = [
   {
     label: '1',
     nav: 'Create a secret',
-    title: 'A cold wallet starts by making a secret.',
-    body: 'The small model below starts with a simulated secret, made from randomness.',
+    title: 'A real seed needs an impractically large number of possible beginnings.',
+    body: 'This first view illustrates what a wallet needs. The value shown is not generated as a real wallet seed.',
     action: 'Start the walkthrough',
   },
   {
     label: '2',
     nav: 'Weak fallback',
-    title: 'Affected firmware could fall back to weak randomness.',
-    body: 'In the model, that leaves only 64 possible simulated secrets to try.',
+    title: 'The faulty route made the list of plausible beginnings much smaller.',
+    body: 'This teaching example uses only 64 possibilities so you can see what a search looks like.',
     action: 'Show the fallback',
   },
   {
     label: '3',
     nav: 'Test a guess',
-    title: 'A public address can confirm a recreated secret.',
-    body: 'Run the model through all 64 simulated secrets. The public address is enough to check each guess.',
+    title: 'Public wallet information can tell an attacker when a guess is right.',
+    body: 'It does not reveal the seed. It only provides a way to check whether a guessed seed recreates the wallet.',
     action: 'Run the 64 guesses',
   },
 ] as const;
 
 const TIMELINE = [
   {
-    date: 'March 2021',
+    date: '1 March 2021',
     title: 'Seed generation changed path',
-    body: 'A firmware change routed new-wallet creation through ngu.random. That call reached MicroPython\'s software fallback instead of COLDCARD\'s hardware random-number generator.',
+    body: 'A code change sent new-seed creation through ngu.random. The affected route first shipped in firmware 4.0.0 on 17 March.',
+    sourceHref: 'https://github.com/Coldcard/firmware/commit/b18723dddb6d751c39978e4364b56b2414f68b47',
+    sourceLabel: 'Firmware change',
   },
   {
-    date: 'March 2022',
+    date: '11 March 2022',
     title: 'Later models added another input',
-    body: 'Mk4 development added values from two secure elements. This reduced the damage, but only four bytes from that extra input reached the software generator.',
+    body: 'Mk4 development added data from two secure elements. The data was hashed, but only four bytes entered the software generator.',
+    sourceHref: 'https://github.com/Coldcard/firmware/commit/01cb43f7e87cc806963a74cbe0fcb4155f23a2a3',
+    sourceLabel: 'Reseed change',
   },
   {
-    date: '30 July 2026',
-    title: 'Coordinated sweeps brought the fault to light',
-    body: 'Independent researchers began tracing a concentrated movement of funds and connected it to seeds created by affected COLDCARD firmware.',
+    date: '30 July 2026 UTC',
+    title: 'Reported sweeps triggered investigation',
+    body: 'Researchers reported coordinated sweeps and began investigating. They then identified the firmware flaw. Blockchain data alone cannot prove which device created a swept key.',
+    sourceHref: 'https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware',
+    sourceLabel: 'Independent firmware analysis',
   },
   {
     date: '31 July 2026',
     title: 'Fixed firmware became available',
-    body: 'Coinkite released fixes for every affected model and release track. The updates fix new seed generation; they cannot repair an existing seed.',
+    body: 'Coinkite released fixed firmware for every affected model and release track. The update corrects new seed generation, but cannot repair an existing seed.',
+    sourceHref: 'https://blog.coinkite.com/coldcard-mk3-seed-generation-warning/',
+    sourceLabel: 'Official advisory',
   },
 ] as const;
 
@@ -146,11 +154,11 @@ export function EntropyStudy() {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-canvas text-ink">
-      <header className="grid h-14 grid-cols-[1fr_auto] items-center gap-4 border-b border-white/10 px-4 sm:grid-cols-[1fr_auto_1fr] md:px-8">
+    <div id="top" className="min-h-[100dvh] bg-canvas text-ink">
+      <header className="sticky top-0 z-50 grid h-14 grid-cols-[minmax(0,1fr)_auto] items-center gap-4 border-b border-white/10 bg-canvas/95 px-4 backdrop-blur-sm sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:px-8">
         <a
           href="https://mars-llm.github.io/hal-finney-trading-algorithms/"
-          className="flex min-h-11 items-center gap-2 font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted transition-colors hover:text-white"
+          className="flex min-h-11 min-w-0 items-center gap-2 font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted transition-colors hover:text-white"
         >
           <ArrowLeft size={13} aria-hidden="true" />
           <span className="hidden sm:inline">Cryptographic Arts</span>
@@ -159,9 +167,9 @@ export function EntropyStudy() {
         <p className="hidden font-mono text-[9px] uppercase tracking-[0.2em] text-ink-muted sm:block">
           Security case study / 01
         </p>
-        <p className="justify-self-end font-serif text-sm uppercase tracking-[0.16em] text-white">
+        <a href="#top" className="min-w-0 max-w-full truncate text-right font-serif text-sm uppercase tracking-[0.16em] text-white transition-colors hover:text-accent">
           Entropy Collapse
-        </p>
+        </a>
       </header>
 
       <main>
@@ -177,27 +185,33 @@ export function EntropyStudy() {
                 Cold storage security case study / Updated 3 August 2026
               </p>
               <h1 className="mt-4 font-serif text-3xl leading-tight text-white sm:text-4xl lg:text-5xl">
-                How a weak random-number fallback exposed cold wallets.
+                How a firmware mistake weakened COLDCARD seed generation.
               </h1>
               <p className="mt-4 max-w-2xl font-sans text-sm leading-relaxed text-ink-muted">
-                A hardware wallet keeps its seed offline. That protection fails if the seed was predictable when it was created. This page explains the affected COLDCARD firmware, what owners should do, and how the fault unfolded.
+                A seed is the master secret behind a Bitcoin wallet. A hardware wallet can keep it offline, but that does not help if the seed came from too few possibilities. This page explains what changed, what is known about the reported sweeps, and what affected owners can do.
               </p>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                 <a
                   href="#owner-guidance"
-                  className="inline-flex min-h-12 items-center justify-center gap-3 border border-accent bg-accent px-5 font-mono text-[9px] uppercase tracking-[0.15em] text-white transition-colors hover:border-white hover:bg-canvas"
+                  className="inline-flex min-h-12 items-center justify-center gap-3 border border-accent bg-accent px-5 font-mono text-[10px] uppercase tracking-[0.15em] text-canvas transition-colors hover:border-white hover:bg-canvas hover:text-white"
                 >
                   I own a COLDCARD
                   <ArrowRight size={14} aria-hidden="true" />
                 </a>
                 <a
-                  href="#mechanism"
-                  className="inline-flex min-h-12 items-center justify-center gap-3 border border-white/30 px-5 font-mono text-[9px] uppercase tracking-[0.15em] text-white transition-colors hover:border-white"
+                  href="#failure"
+                  className="inline-flex min-h-12 items-center justify-center gap-3 border border-white/30 px-5 font-mono text-[10px] uppercase tracking-[0.15em] text-white transition-colors hover:border-white"
                 >
-                  Understand the failure
+                  How did this happen?
                   <ArrowRight size={14} aria-hidden="true" />
                 </a>
               </div>
+              <p className="mt-5 max-w-2xl font-sans text-xs leading-relaxed text-ink-muted">
+                This site is not affiliated with Coinkite or COLDCARD. Its purpose is to explain the failure, not score points from it. Affected owners should follow the{' '}
+                <a href="https://blog.coinkite.com/coldcard-mk3-seed-generation-warning/" target="_blank" rel="noreferrer" className="text-white underline decoration-accent underline-offset-4 hover:text-accent">
+                  official advisory
+                </a>.
+              </p>
             </motion.header>
 
             <nav aria-label="Page sections" className="border-y border-white/15 font-mono text-[9px] uppercase tracking-[0.16em]">
@@ -205,98 +219,168 @@ export function EntropyStudy() {
                 Owner guidance
                 <span className="text-accent">01</span>
               </a>
-              <a href="#timeline" className="flex min-h-11 items-center justify-between border-b border-white/10 text-ink-muted transition-colors hover:text-white">
-                Timeline
+              <a href="#failure" className="flex min-h-11 items-center justify-between border-b border-white/10 text-ink-muted transition-colors hover:text-white">
+                The failure
                 <span className="text-accent">02</span>
               </a>
-              <a href="#mechanism" className="flex min-h-11 items-center justify-between border-b border-white/10 text-ink-muted transition-colors hover:text-white">
-                Interactive explanation
+              <a href="#timeline" className="flex min-h-11 items-center justify-between border-b border-white/10 text-ink-muted transition-colors hover:text-white">
+                Timeline
                 <span className="text-accent">03</span>
               </a>
-              <a href="#numbers" className="flex min-h-11 items-center justify-between text-ink-muted transition-colors hover:text-white">
-                What the numbers mean
+              <a href="#mechanism" className="flex min-h-11 items-center justify-between border-b border-white/10 text-ink-muted transition-colors hover:text-white">
+                Try the explanation
                 <span className="text-accent">04</span>
+              </a>
+              <a href="#sources" className="flex min-h-11 items-center justify-between text-ink-muted transition-colors hover:text-white">
+                Sources and detail
+                <span className="text-accent">05</span>
               </a>
             </nav>
           </div>
         </section>
 
-        <section id="owner-guidance" className="scroll-mt-6 border-b border-accent/60 bg-accent/[0.10] px-4 py-10 md:px-8 md:py-14">
+        <section id="owner-guidance" className="scroll-mt-20 border-b border-accent/60 bg-accent/[0.10] px-4 py-10 md:px-8 md:py-14">
           <div className="mx-auto max-w-6xl">
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
               <div>
                 <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">For COLDCARD owners / Start here</p>
-                <h2 className="mt-3 font-serif text-3xl leading-tight text-white">Check how your seed was created.</h2>
+                <h2 className="mt-3 font-serif text-3xl leading-tight text-white">Could this affect my wallet?</h2>
                 <p className="mt-3 max-w-2xl font-sans text-sm leading-relaxed text-ink-muted">
-                  The firmware installed when the seed was first made is what matters. Updating today fixes future seed generation, but it does not change the seed already holding funds.
+                  What matters is where the seed words were first created—not which device holds them today. A seed generated on affected COLDCARD firmware remains affected after being restored elsewhere. A seed created elsewhere and later imported into a COLDCARD did not use this faulty path.
+                </p>
+                <p className="mt-3 max-w-2xl font-sans text-sm leading-relaxed text-ink-muted">
+                  Updating the firmware fixes future seed generation; it does not repair seed words that already exist. If you cannot establish where the seed was created, check the official advisory or ask your wallet provider before changing the setup.
                 </p>
               </div>
               <a
                 href="https://blog.coinkite.com/coldcard-mk3-seed-generation-warning/"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex min-h-12 items-center justify-center gap-3 bg-white px-5 font-mono text-[9px] uppercase tracking-[0.15em] text-black transition-colors hover:bg-ink"
+                className="inline-flex min-h-12 items-center justify-center gap-3 bg-white px-5 font-mono text-[10px] uppercase tracking-[0.15em] text-black transition-colors hover:bg-ink"
               >
                 Official migration guidance
                 <ExternalLink size={13} aria-hidden="true" />
               </a>
             </div>
 
-            <ol className="mt-9 grid border-y border-accent/35 lg:grid-cols-3">
-              <li className="border-b border-accent/25 py-6 lg:border-b-0 lg:border-r lg:pr-6">
-                <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">01 / Check</p>
-                <h3 className="mt-3 font-serif text-xl text-white">Was the seed made on affected firmware?</h3>
-                <p className="mt-3 font-sans text-sm leading-relaxed text-ink-muted">
-                  Coinkite lists Mk2/Mk3 4.0.1–4.1.9; Mk4/Mk5 before standard 5.6.0 or Edge 6.6.0X; and Q before standard 1.5.0Q or Edge 6.6.0QX.
-                </p>
+            <div className="mt-9 border-y border-accent/35">
+              <div className="grid grid-cols-[7rem_1fr_1fr] gap-3 border-b border-accent/25 py-3 font-mono text-[10px] uppercase tracking-[0.14em] text-accent sm:grid-cols-[10rem_1fr_1fr]">
+                <span>Model</span>
+                <span>Seed made on</span>
+                <span>Fixed in</span>
+              </div>
+              <div className="grid grid-cols-[7rem_1fr_1fr] gap-3 border-b border-accent/20 py-4 font-sans text-sm sm:grid-cols-[10rem_1fr_1fr]">
+                <strong className="font-normal text-white">Mk2 / Mk3</strong>
+                <span className="text-ink-muted">4.0.0–4.1.9*</span>
+                <span className="text-white">4.2.0+</span>
+              </div>
+              <div className="grid grid-cols-[7rem_1fr_1fr] gap-3 border-b border-accent/20 py-4 font-sans text-sm sm:grid-cols-[10rem_1fr_1fr]">
+                <strong className="font-normal text-white">Mk4 / Mk5</strong>
+                <span className="text-ink-muted">Before 5.6.0 standard or 6.6.0X Edge</span>
+                <span className="text-white">5.6.0+ standard or 6.6.0X+ Edge</span>
+              </div>
+              <div className="grid grid-cols-[7rem_1fr_1fr] gap-3 py-4 font-sans text-sm sm:grid-cols-[10rem_1fr_1fr]">
+                <strong className="font-normal text-white">Q</strong>
+                <span className="text-ink-muted">Before 1.5.0Q standard or 6.6.0QX Edge</span>
+                <span className="text-white">1.5.0Q+ standard or 6.6.0QX+ Edge</span>
+              </div>
+            </div>
+            <p className="mt-3 max-w-4xl font-sans text-xs leading-relaxed text-ink-muted">
+              * Coinkite&apos;s advisory starts the Mk2/Mk3 range at 4.0.1. Public 4.0.0 source and signed release records show the same faulty route, so this page conservatively includes 4.0.0.
+            </p>
+
+            <ol className="mt-8 grid border-y border-accent/35 lg:grid-cols-3">
+              <li className="border-b border-accent/25 py-5 lg:border-b-0 lg:border-r lg:pr-6">
+                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-accent">01 / Update</p>
+                <h3 className="mt-2 font-serif text-lg text-white">Install fixed firmware.</h3>
+                <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">Confirm the version on the device before creating a replacement seed.</p>
               </li>
-              <li className="border-b border-accent/25 py-6 lg:border-b-0 lg:border-r lg:px-6">
-                <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">02 / Update</p>
-                <h3 className="mt-3 font-serif text-xl text-white">Install fixed firmware first.</h3>
-                <p className="mt-3 font-sans text-sm leading-relaxed text-ink-muted">
-                  Use 4.2.0+ for Mk2/Mk3, 5.6.0+ or 6.6.0X+ for Mk4/Mk5, and 1.5.0Q+ or 6.6.0QX+ for Q. Standard and Edge are separate tracks.
-                </p>
+              <li className="border-b border-accent/25 py-5 lg:border-b-0 lg:border-r lg:px-6">
+                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-accent">02 / Replace</p>
+                <h3 className="mt-2 font-serif text-lg text-white">Create and verify a new seed.</h3>
+                <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">Check the written backup, wallet fingerprint, and a receive address on the device.</p>
               </li>
-              <li className="py-6 lg:pl-6">
-                <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">03 / Replace</p>
-                <h3 className="mt-3 font-serif text-xl text-white">Create a new seed, then move carefully.</h3>
-                <p className="mt-3 font-sans text-sm leading-relaxed text-ink-muted">
-                  Verify the backup, wallet fingerprint, and a receive address. Send a small test first. Move the rest only after it arrives, and keep the old backup until the migration is confirmed.
-                </p>
+              <li className="py-5 lg:pl-6">
+                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-accent">03 / Move</p>
+                <h3 className="mt-2 font-serif text-lg text-white">Test first, then move the rest.</h3>
+                <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">Wait for the test to confirm. Keep the old backup until the full migration is complete.</p>
               </li>
             </ol>
 
-            <div className="mt-8">
-              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">What changes the answer?</p>
-              <dl className="mt-3 grid border-t border-accent/35 sm:grid-cols-3">
-                <div className="border-b border-accent/25 py-5 sm:border-b-0 sm:border-r sm:pr-5">
-                  <dt className="font-serif text-base text-white">Fewer than 50 private dice rolls—or not sure</dt>
-                  <dd className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">Follow the official migration steps promptly.</dd>
+            <details className="group mt-7 border-y border-accent/35">
+              <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-5 py-3">
+                <span className="font-serif text-lg text-white">Do dice, a passphrase, or multisig change this?</span>
+                <span className="flex size-9 shrink-0 items-center justify-center border border-accent/70 font-mono text-base text-white transition-transform group-open:rotate-45 group-open:bg-accent group-open:text-canvas" aria-hidden="true">+</span>
+              </summary>
+              <div className="grid gap-0 border-t border-accent/25 pb-2 lg:grid-cols-3">
+                <div className="border-b border-accent/20 py-5 lg:border-b-0 lg:border-r lg:pr-5">
+                  <h3 className="font-serif text-base text-white">Dice added during seed creation</h3>
+                  <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">Coinkite does not consider a seed at risk from this fault alone if at least 50 fair, independent, private rolls were added when it was created. If you are unsure, follow the migration guidance. Rolls added now cannot change an existing seed.</p>
                 </div>
-                <div className="border-b border-accent/25 py-5 sm:border-b-0 sm:border-r sm:px-5">
-                  <dt className="font-serif text-base text-white">At least 50 fair, independent dice rolls</dt>
-                  <dd className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">If the rolls stayed private, Coinkite does not consider the seed at risk from this fault alone.</dd>
+                <div className="border-b border-accent/20 py-5 lg:border-b-0 lg:border-r lg:px-5">
+                  <h3 className="font-serif text-base text-white">Strong BIP-39 passphrase</h3>
+                  <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">This is an extra secret—not the device PIN. It adds another barrier, but does not repair the seed. A short, common, patterned, or reused passphrase may be guessable. Coinkite still advises replacing the affected seed as soon as practical.</p>
                 </div>
-                <div className="py-5 sm:pl-5">
-                  <dt className="font-serif text-base text-white">Strong, unique BIP39 passphrase</dt>
-                  <dd className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">It adds a separate barrier, but does not repair the seed. Replace the affected seed as soon as practical. The COLDCARD PIN is not a passphrase.</dd>
+                <div className="py-5 lg:pl-5">
+                  <h3 className="font-serif text-base text-white">Multisig or another spending policy</h3>
+                  <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">Multisig is not automatically safe or unsafe. If enough unmitigated affected keys can approve a payment—including through a backup or delayed path—that path may be recoverable. If a healthy independent key is still required, recovering the affected keys alone is not enough to spend. Ask your wallet provider before moving funds.</p>
                 </div>
-              </dl>
-            </div>
+              </div>
+            </details>
+
+            <p className="mt-6 max-w-4xl border-l-2 border-white/70 pl-4 font-sans text-sm leading-relaxed text-white">
+              Never enter seed words or a passphrase on this site—or any website. Ignore unsolicited recovery help. Do not erase the old wallet or its backup until the full balance has reached the new wallet and is confirmed.
+            </p>
 
             <a
-              href="https://coldcard.com/downloads/"
+              href="https://blog.coinkite.com/coldcard-mk3-seed-generation-warning/"
               target="_blank"
               rel="noreferrer"
-              className="mt-6 inline-flex min-h-11 items-center gap-3 font-mono text-[9px] uppercase tracking-[0.15em] text-white underline decoration-accent underline-offset-4 transition-colors hover:text-accent"
+              className="mt-6 inline-flex min-h-11 items-center gap-3 font-mono text-[10px] uppercase tracking-[0.15em] text-white underline decoration-accent underline-offset-4 transition-colors hover:text-accent"
             >
-              Official firmware downloads
+              Get the correct download from the official advisory
               <ExternalLink size={13} aria-hidden="true" />
             </a>
           </div>
         </section>
 
-        <section id="timeline" className="scroll-mt-6 border-b border-white/10 px-4 py-12 md:px-8 md:py-16">
+        <section id="failure" className="scroll-mt-20 border-b border-white/10 px-4 py-12 md:px-8 md:py-16">
+          <div className="mx-auto max-w-6xl">
+            <div className="max-w-2xl">
+              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">The one-minute explanation</p>
+              <h2 className="mt-3 font-serif text-3xl leading-tight text-white">The wallet asked for random bytes. The request reached the wrong code.</h2>
+              <p className="mt-3 font-sans text-sm leading-relaxed text-ink-muted">
+                Every new wallet needs a seed: the master secret behind its keys and addresses. The seed must begin with fresh, unpredictable randomness.
+              </p>
+            </div>
+
+            <div className="mt-9 border-y border-white/15">
+              <div className="grid gap-4 border-b border-white/10 py-6 sm:grid-cols-[9rem_1fr_auto] sm:items-center sm:gap-8">
+                <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted">Expected route</p>
+                <p className="font-serif text-xl text-white">New wallet → hardware-generated random bytes → seed material</p>
+                <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-ink-muted">Designed path</span>
+              </div>
+              <div className="grid gap-4 py-6 sm:grid-cols-[9rem_1fr_auto] sm:items-center sm:gap-8">
+                <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">Affected route</p>
+                <p className="font-serif text-xl text-white">New wallet → deterministic software generator → seed material from limited device and timing state</p>
+                <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-accent">Affected builds</span>
+              </div>
+            </div>
+
+            <div className="mt-7 grid gap-4 border-l-2 border-accent pl-5 sm:grid-cols-[12rem_1fr] sm:gap-8">
+              <p className="font-serif text-lg text-white">Why offline was not enough</p>
+              <p className="max-w-3xl font-sans text-sm leading-relaxed text-ink-muted">
+                An attacker could recreate candidate seeds elsewhere and compare the resulting public wallet information with the target wallet. The device did not need to be touched or connected. Bitcoin&apos;s cryptography was not broken; the failure happened while the seed was being created.
+              </p>
+            </div>
+
+            <p className="mt-6 max-w-4xl font-sans text-sm leading-relaxed text-ink-muted">
+              Mk2 and Mk3 relied on device and timing state. Mk4, Mk5, and Q also mixed in secure-element data, but only four bytes entered the software generator. Later models were therefore weakened in a different—and less severe—way.
+            </p>
+          </div>
+        </section>
+
+        <section id="timeline" className="scroll-mt-20 border-b border-white/10 px-4 py-12 md:px-8 md:py-16">
           <div className="mx-auto max-w-6xl">
             <div className="max-w-2xl">
               <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">What happened</p>
@@ -317,6 +401,15 @@ export function EntropyStudy() {
                   <div>
                     <h3 className="font-serif text-xl text-white">{item.title}</h3>
                     <p className="mt-2 max-w-2xl font-sans text-sm leading-relaxed text-ink-muted">{item.body}</p>
+                    <a
+                      href={item.sourceHref}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-3 inline-flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.15em] text-ink-muted underline decoration-white/30 underline-offset-4 transition-colors hover:text-white"
+                    >
+                      {item.sourceLabel}
+                      <ExternalLink size={11} aria-hidden="true" />
+                    </a>
                   </div>
                 </li>
               ))}
@@ -324,13 +417,16 @@ export function EntropyStudy() {
           </div>
         </section>
 
-        <section id="mechanism" className="scroll-mt-6 border-b border-white/10 px-4 py-12 md:px-8 md:py-16">
+        <section id="mechanism" className="scroll-mt-20 border-b border-white/10 px-4 py-12 md:px-8 md:py-16">
           <div className="mx-auto max-w-6xl">
             <div className="max-w-2xl">
               <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">Interactive explanation</p>
-              <h2 className="mt-3 font-serif text-3xl leading-tight text-white">Why an offline wallet could still be found.</h2>
+              <h2 className="mt-3 font-serif text-3xl leading-tight text-white">Try the search with 64 harmless examples.</h2>
               <p className="mt-3 font-sans text-sm leading-relaxed text-ink-muted">
-                This small example shows the mechanism without creating wallet keys or reproducing COLDCARD firmware.
+                The real bug is more complicated. This demo keeps only the essential point: if the list of plausible seeds becomes small enough, someone else can test the list.
+              </p>
+              <p className="mt-3 font-sans text-sm leading-relaxed text-white">
+                A tile pattern stands in for public wallet information. The demo creates no Bitcoin keys or addresses.
               </p>
             </div>
 
@@ -348,7 +444,7 @@ export function EntropyStudy() {
                     >
                       <span
                         className={`flex size-7 shrink-0 items-center justify-center rounded-full border font-mono text-[9px] ${
-                          index === stage ? 'border-accent bg-accent text-white' : 'border-white/20'
+                          index === stage ? 'border-accent bg-accent text-canvas' : 'border-white/20'
                         }`}
                       >
                         {item.label}
@@ -362,6 +458,7 @@ export function EntropyStudy() {
               <div className="grid gap-6 border-b border-white/15 p-5 sm:p-7 lg:grid-cols-[1fr_auto] lg:items-end">
                 <motion.div
                   key={stage}
+                  aria-live="polite"
                   initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: shouldReduceMotion ? 0 : 0.2 }}
@@ -380,7 +477,7 @@ export function EntropyStudy() {
                     <button
                       type="button"
                       onClick={() => selectStage(stage - 1)}
-                      className="flex min-h-11 items-center gap-2 px-3 font-mono text-[9px] uppercase tracking-[0.15em] text-ink-muted transition-colors hover:text-white"
+                      className="flex min-h-11 items-center gap-2 px-3 font-mono text-[10px] uppercase tracking-[0.15em] text-ink-muted transition-colors hover:text-white"
                     >
                       <ArrowLeft size={13} aria-hidden="true" />
                       Back
@@ -390,7 +487,7 @@ export function EntropyStudy() {
                     type="button"
                     onClick={continueStudy}
                     disabled={searching || (stage === 2 && !targetClue)}
-                    className="flex min-h-11 items-center gap-3 border border-white/40 bg-white px-4 font-mono text-[9px] uppercase tracking-[0.15em] text-black transition-colors hover:bg-ink disabled:cursor-wait disabled:opacity-50"
+                    className="flex min-h-11 items-center gap-3 border border-white/40 bg-white px-4 font-mono text-[10px] uppercase tracking-[0.15em] text-black transition-colors hover:bg-ink disabled:cursor-wait disabled:opacity-50"
                   >
                     {searching ? 'Checking' : found ? 'Run again' : currentStage.action}
                     {found ? <RotateCcw size={14} aria-hidden="true" /> : <ArrowRight size={14} aria-hidden="true" />}
@@ -421,53 +518,109 @@ export function EntropyStudy() {
             </div>
 
             <p className="mt-7 max-w-3xl border-l-2 border-accent pl-4 font-serif text-lg leading-relaxed text-ink">
-              The device does not have to be online. If someone can recreate its seed elsewhere, they can recreate the same wallet and test the guess against a public address.
+              Public wallet information does not reveal the seed. It provides a yes-or-no check: does this guess recreate the same wallet? The device can remain offline throughout the search.
             </p>
           </div>
         </section>
 
-        <section id="numbers" className="scroll-mt-6 border-b border-white/10 bg-white/[0.025] px-4 py-12 md:px-8 md:py-16">
+        <section id="numbers" className="scroll-mt-20 border-b border-white/10 bg-white/[0.025] px-4 py-12 md:px-8 md:py-16">
           <div className="mx-auto max-w-6xl">
             <div className="max-w-2xl">
-              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">Read the numbers carefully</p>
-              <h2 className="mt-3 font-serif text-3xl text-white">Three figures describe different things.</h2>
+              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">Search is not collision</p>
+              <h2 className="mt-3 font-serif text-3xl leading-tight text-white">Finding one seed does not mean two wallets shared it.</h2>
               <p className="mt-3 font-sans text-sm leading-relaxed text-ink-muted">
-                These are preliminary security estimates, not measured attack times and not a promise of how long funds remain safe.
+                These two ideas have often been mixed together. They are different.
               </p>
             </div>
 
-            <dl className="mt-9 grid border-y border-white/15 lg:grid-cols-3">
-              <div className="border-b border-white/10 py-6 lg:border-b-0 lg:border-r lg:pr-6">
-                <dt className="font-serif text-3xl text-white">About 40 bits</dt>
-                <dd className="mt-3 font-sans text-sm leading-relaxed text-ink-muted">Coinkite&apos;s current estimate for affected Mk2 and Mk3 seed searches.</dd>
+            <dl className="mt-9 grid border-y border-white/15 sm:grid-cols-2">
+              <div className="border-b border-white/10 py-6 sm:border-b-0 sm:border-r sm:pr-7">
+                <dt className="font-serif text-xl text-white">Searchable</dt>
+                <dd className="mt-3 font-sans text-sm leading-relaxed text-ink-muted">An attacker tests plausible seeds until one recreates the target wallet.</dd>
               </div>
-              <div className="border-b border-white/10 py-6 lg:border-b-0 lg:border-r lg:px-6">
-                <dt className="font-serif text-3xl text-white">About 72 bits</dt>
-                <dd className="mt-3 font-sans text-sm leading-relaxed text-ink-muted">Coinkite&apos;s current estimate for affected Mk4, Mk5, and Q seeds, which had extra secure-element input.</dd>
-              </div>
-              <div className="py-6 lg:pl-6">
-                <dt className="font-serif text-3xl text-white">32 bits</dt>
-                <dd className="mt-3 font-sans text-sm leading-relaxed text-ink-muted">A constrained input in Block&apos;s later-model analysis—not proof that every complete seed came from one shared 32-bit pool.</dd>
+              <div className="py-6 sm:pl-7">
+                <dt className="font-serif text-xl text-white">Duplicated — also called a collision</dt>
+                <dd className="mt-3 font-sans text-sm leading-relaxed text-ink-muted">Two wallets began from exactly the same seed. An attacker does not need this to find either wallet.</dd>
               </div>
             </dl>
 
-            <div className="mt-8 grid gap-4 border-l-2 border-accent pl-5 sm:grid-cols-[auto_1fr] sm:gap-8">
-              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">About collision claims</p>
-              <p className="max-w-3xl font-sans text-sm leading-relaxed text-ink">
-                The widely shared birthday calculation works only if every complete seed is an independent draw from the same uniform 32-bit pool. That has not been shown for COLDCARD, and no verified duplicate-seed incident has been published. The fallback also depended on device identity, timing, and earlier calls.
+            <div className="mt-8 border-y border-white/15 py-7">
+              <div className="grid items-center gap-7 lg:grid-cols-[1fr_auto_1fr]">
+                <SearchLane label="Search for wallet A" result="Seed A found" activeIndex={17} />
+                <p className="text-center font-serif text-3xl text-accent" aria-label="does not equal">≠</p>
+                <SearchLane label="Search for wallet B" result="Seed B found" activeIndex={43} />
+              </div>
+              <p className="mt-6 text-center font-sans text-sm leading-relaxed text-ink-muted">
+                Both searches can succeed and still end at different seeds.
               </p>
+            </div>
+
+            <div className="mt-8 grid gap-4 border-l-2 border-accent pl-5 sm:grid-cols-[12rem_1fr] sm:gap-8">
+              <p className="font-serif text-lg text-white">What the code establishes</p>
+              <div className="max-w-3xl space-y-3 font-sans text-sm leading-relaxed text-ink-muted">
+                <p>
+                  A widely shared birthday calculation assumes every wallet chose independently and evenly from the same list of about 4.3 billion complete seeds. The published code does not establish that model, and no duplicate seed has been confirmed.
+                </p>
+                <p>
+                  Block identified a four-byte input on later models. That does not mean every finished wallet seed came from one shared list of 4.3 billion seeds. Other software state and earlier generator calls also affected the result.
+                </p>
+                <a
+                  href="https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.15em] text-white underline decoration-accent underline-offset-4 hover:text-accent"
+                >
+                  Read Block&apos;s analysis
+                  <ExternalLink size={11} aria-hidden="true" />
+                </a>
+              </div>
+            </div>
+
+            <div className="mt-12 border-t border-white/15 pt-9">
+              <div className="max-w-2xl">
+                <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">What the bit figures mean</p>
+                <h3 className="mt-3 font-serif text-2xl text-white">These estimates answer different questions.</h3>
+                <p className="mt-3 font-sans text-sm leading-relaxed text-ink-muted">
+                  Block described one conditional limit. Coinkite published broader, preliminary search estimates. None is a measured attack time, a collision measurement, or a promise of how long funds remain safe.
+                </p>
+              </div>
+
+              <dl className="mt-7 grid border-y border-white/15 lg:grid-cols-3">
+                <div className="border-b border-white/10 py-6 lg:border-b-0 lg:border-r lg:pr-7">
+                  <dt className="font-serif text-3xl text-white">2³²</dt>
+                  <dd className="mt-3 font-sans text-sm leading-relaxed text-ink-muted">Block&apos;s limit for the possible four-byte secure-element reseeds on later models, once the remaining software state and call history are fixed.</dd>
+                </div>
+                <div className="border-b border-white/10 py-6 lg:border-b-0 lg:border-r lg:px-7">
+                  <dt className="font-serif text-3xl text-white">About 40 bits</dt>
+                  <dd className="mt-3 font-sans text-sm leading-relaxed text-ink-muted">Coinkite&apos;s preliminary, broader search estimate for affected Mk2 and Mk3 seeds.</dd>
+                </div>
+                <div className="py-6 lg:pl-7">
+                  <dt className="font-serif text-3xl text-white">About 72 bits</dt>
+                  <dd className="mt-3 font-sans text-sm leading-relaxed text-ink-muted">Coinkite&apos;s preliminary, broader search estimate for affected Mk4, Mk5, and Q seeds. No public end-to-end benchmark establishes a specific time.</dd>
+                </div>
+              </dl>
+
+              <a
+                href="https://blog.coinkite.com/entropy-technical-backgrounder/"
+                target="_blank"
+                rel="noreferrer"
+                className="mt-5 inline-flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.15em] text-white underline decoration-accent underline-offset-4 hover:text-accent"
+              >
+                Read Coinkite&apos;s technical estimate
+                <ExternalLink size={11} aria-hidden="true" />
+              </a>
             </div>
           </div>
         </section>
 
-        <details className="group border-b border-white/10 bg-white/[0.035] px-4 md:px-8">
+        <details id="sources" className="group scroll-mt-20 border-b border-white/10 bg-white/[0.035] px-4 md:px-8">
           <summary className="mx-auto flex min-h-28 max-w-6xl cursor-pointer list-none items-center justify-between gap-6 py-5">
             <div>
               <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">Research record</p>
               <p className="mt-2 font-serif text-xl text-white">Sources and technical detail</p>
               <p className="mt-2 font-sans text-sm text-ink-muted">Incident figures, code-level findings, limits, and primary sources.</p>
             </div>
-            <span className="flex size-11 shrink-0 items-center justify-center border border-accent/70 font-mono text-lg text-white transition-colors group-hover:bg-accent group-open:bg-accent group-open:text-white" aria-hidden="true">
+            <span className="flex size-11 shrink-0 items-center justify-center border border-accent/70 font-mono text-lg text-white transition-transform group-hover:bg-accent group-hover:text-canvas group-open:rotate-45 group-open:bg-accent group-open:text-canvas" aria-hidden="true">
               +
             </span>
           </summary>
@@ -477,13 +630,13 @@ export function EntropyStudy() {
                 <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">Incident record</p>
                 <div className="mt-4 space-y-4 font-sans text-sm leading-relaxed text-ink-muted">
                   <p>
-                    Galaxy Research estimates that three suspected sweep waves moved 1,367.05 BTC from 4,585 addresses. The first moved 1,082.65 BTC from 1,196 addresses in 41 minutes on 30 July.
+                    Galaxy Research&apos;s blockchain analysis groups three suspected sweep waves whose transaction inputs total 1,367.05 BTC across 4,585 addresses. Its revised first wave moved 1,082.65 BTC from 1,195 addresses in 41 minutes on 30 July UTC.
                   </p>
                   <p>
-                    On 3 August, Alex Thorn reported a separate 388.93 BTC cluster as a likely fourth wave. That link is still provisional. Bitcoin transactions alone do not identify the hardware model or firmware that created a key, so it is not added to the three-wave total here.
+                    After correcting earlier classifications, Alex Thorn reported a separate provisional cluster of 448.73 BTC across 709 addresses on 3 August. He said the earlier set included 89 addresses from multisig transactions that did not belong there. He reported no direct confirmation from affected owners, so this page does not add the cluster to Galaxy&apos;s three-wave total.
                   </p>
                   <p>
-                    No public evidence identifies the tool used to find the fault. Coinkite says it has to assume AI was involved; that is an inference, not a confirmed attribution.
+                    Galaxy says its grouping is based on blockchain patterns, not on recreating the seeds. A sweep transaction reflects the software that signed it, not the device that originally created the victim&apos;s seed. The blockchain alone cannot identify a COLDCARD model or firmware version.
                   </p>
                 </div>
               </section>
@@ -492,10 +645,13 @@ export function EntropyStudy() {
                 <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">Code path and state</p>
                 <div className="mt-4 space-y-4 font-sans text-sm leading-relaxed text-ink-muted">
                   <p>
-                    The fallback combined the low 32 bits of the chip ID with a processor counter. Its full state also depended on two clock registers and the number of earlier random-number calls. No published study has measured how those values cluster across a large set of physical devices.
+                    MicroPython initialized the fallback from one 32-bit word of the chip ID, the current phase of a repeating processor counter, and two raw clock-register values. Earlier calls then advanced the generator before seed creation. The processor counter was not a timestamp, and no published hardware study has measured how these values are distributed across many devices and boots.
                   </p>
                   <p>
-                    Coinkite&apos;s advisory starts the Mk2/Mk3 range at 4.0.1. Tagged 4.0.0 source already uses the affected seed path; that source-level discrepancy is preserved in the links below.
+                    Coinkite&apos;s advisory starts the Mk2/Mk3 range at 4.0.1. Its official version history lists 4.0.0 as a release, and the public source plus signed build records use the affected route. This page therefore includes 4.0.0 while keeping the difference from Coinkite&apos;s published range explicit.
+                  </p>
+                  <p>
+                    The same fallback supplied randomness to some other firmware features. Their impact differs; this page focuses on new-wallet seed creation. Functions that called COLDCARD&apos;s separate <code className="font-mono text-xs text-ink">ckcc.rng_bytes</code> route still reached the hardware generator.
                   </p>
                 </div>
               </section>
@@ -504,10 +660,10 @@ export function EntropyStudy() {
                 <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">Search limits</p>
                 <div className="mt-4 space-y-4 font-sans text-sm leading-relaxed text-ink-muted">
                   <p>
-                    BIP39 runs every candidate through 2,048 HMAC-SHA512 steps. That slows each guess but cannot restore missing randomness. Existing GPU and FPGA studies cover related building blocks, not a complete COLDCARD search.
+                    BIP-39 derives the wallet seed with PBKDF2-HMAC-SHA512 using 2,048 iterations. Checking a candidate also requires the relevant wallet-key and address derivation. These steps slow each guess but cannot restore randomness that was missing at seed creation.
                   </p>
                   <p>
-                    A practical later-model search has not been demonstrated publicly. Hardware-cost and rental-GPU estimates remain assumptions, not measured results.
+                    Published GPU and FPGA studies cover individual building blocks, not a complete COLDCARD search. A practical later-model search has not been demonstrated publicly. Hardware-cost and rental-GPU estimates remain assumptions, not measured results.
                   </p>
                 </div>
               </section>
@@ -516,38 +672,76 @@ export function EntropyStudy() {
                 <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">What a recovered seed exposes</p>
                 <div className="mt-4 space-y-4 font-sans text-sm leading-relaxed text-ink-muted">
                   <p>
-                    A public address is enough to check a candidate offline. A recovered seed can reveal addresses and activity from that wallet, which may reduce privacy in a CoinJoin or PayJoin. It does not automatically expose every other participant.
+                    A recovered seed lets an attacker derive and scan common wallet paths. That can link the affected wallet&apos;s activity and reduce the privacy of CoinJoin or Payjoin transactions it joined, but it does not automatically expose every custom path or every other participant.
                   </p>
                   <p>
-                    One recovered key cannot spend from a shared policy that still needs a separate uncompromised key. Risk changes when affected keys can satisfy a normal or recovery path, including a Miniscript path once its conditions are met.
+                    If enough unmitigated affected keys can satisfy a normal or recovery path, that path may be recoverable. If a healthy independent key is still required, recovering the affected keys alone is not enough to spend.
                   </p>
                 </div>
               </section>
             </div>
 
             <p className="mt-9 max-w-3xl border-t border-white/10 pt-6 font-sans text-sm leading-relaxed text-ink-muted">
-              The interactive explanation uses SHA-256 and 64 simulated starting secrets. It never handles wallet material, derives Bitcoin addresses, or reproduces COLDCARD firmware.
+              The interactive explanation uses SHA-256 and 64 simulated starting secrets. A 12-tile excerpt makes each 256-bit check visible, while matching uses the full value. It never handles wallet material, derives Bitcoin addresses, or reproduces COLDCARD firmware.
             </p>
 
-            <div className="mt-8 grid border-t border-white/10 sm:grid-cols-2">
-              <SourceLink label="Block analysis" href="https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware" />
-              <SourceLink label="Coinkite backgrounder" href="https://blog.coinkite.com/entropy-technical-backgrounder/" />
-              <SourceLink label="Coinkite migration advisory" href="https://blog.coinkite.com/coldcard-mk3-seed-generation-warning/" />
-              <SourceLink label="Galaxy Research: first sweep" href="https://x.com/glxyresearch/status/2083181683067506899" />
-              <SourceLink label="Galaxy Research: three-wave estimate" href="https://x.com/glxyresearch/status/2083623500183421043" />
-              <SourceLink label="Alex Thorn: provisional fourth wave" href="https://x.com/intangiblecoins/status/2084079706320646300" />
-              <SourceLink label="STM32 chip-ID structure" href="https://community.st.com/stm32-mcus-60/how-to-obtain-and-use-the-stm32-96-bit-uid-125456" />
-              <SourceLink label="MicroPython fallback source" href="https://github.com/Coldcard/micropython/blob/4107246f8a080807b62c3b4838e71e812ea68b6f/ports/stm32/rng.c#L74-L98" />
-              <SourceLink label="Mk2/Mk3 4.0.0 seed source" href="https://github.com/Coldcard/firmware/blob/2021-03-17T1724-v4.0.0/shared/seed.py#L348-L359" />
-              <SourceLink label="Official firmware downloads" href="https://coldcard.com/downloads/" />
-              <SourceLink label="COLDCARD firmware source" href="https://github.com/Coldcard/firmware" />
-              <SourceLink label="Bitcoin.org Android RNG alert" href="https://bitcoin.org/en/alert/2013-08-11-android" />
-              <SourceLink label="BIP-39 specification" href="https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki" />
-              <SourceLink label="FPGA HMAC-SHA512 implementation" href="https://cacr.uwaterloo.ca/techreports/2011/cacr2011-10.pdf" />
-              <SourceLink label="FPGA wallet pipeline study" href="https://ietresearch.onlinelibrary.wiley.com/doi/10.1049/blc2.70028" />
-              <SourceLink label="GPU PBKDF2 acceleration study" href="https://www.usenix.org/system/files/conference/woot16/woot16-paper-ruddick.pdf" />
-              <SourceLink label="Reported collection address" href="https://mempool.space/address/bc1qnk4zh9qcnap2mycp56qjrgza3cc8ylrh8fecp0" />
-              <SourceLink label="Reported consolidation transaction" href="https://mempool.space/tx/0c6bf853a645b699a3b2cd6d8e3c44cf1a02a16f538df08212a44753f75d9d01" />
+            <div className="mt-8 grid gap-8 border-t border-white/10 pt-8 lg:grid-cols-2">
+              <section>
+                <h3 className="font-serif text-lg text-white">Owner guidance and fixed firmware</h3>
+                <div className="mt-3 border-t border-white/10">
+                  <SourceLink label="Coinkite migration advisory" href="https://blog.coinkite.com/coldcard-mk3-seed-generation-warning/" />
+                  <SourceLink label="Mk2/Mk3 fixed firmware" href="https://coldcard.com/downloads/mk3" />
+                  <SourceLink label="Mk4/Mk5 fixed firmware" href="https://coldcard.com/downloads/mk" />
+                  <SourceLink label="Q fixed firmware" href="https://coldcard.com/downloads/q1" />
+                  <SourceLink label="Edge fixed firmware" href="https://coldcard.com/downloads/edge" />
+                </div>
+              </section>
+
+              <section>
+                <h3 className="font-serif text-lg text-white">Firmware and root cause</h3>
+                <div className="mt-3 border-t border-white/10">
+                  <SourceLink label="Block analysis" href="https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware" />
+                  <SourceLink label="Coinkite technical backgrounder" href="https://blog.coinkite.com/entropy-technical-backgrounder/" />
+                  <SourceLink label="March 2021 seed-path change" href="https://github.com/Coldcard/firmware/commit/b18723dddb6d751c39978e4364b56b2414f68b47" />
+                  <SourceLink label="March 2022 secure-element reseed" href="https://github.com/Coldcard/firmware/commit/01cb43f7e87cc806963a74cbe0fcb4155f23a2a3" />
+                  <SourceLink label="MicroPython fallback source" href="https://github.com/Coldcard/micropython/blob/4107246f8a080807b62c3b4838e71e812ea68b6f/ports/stm32/rng.c#L74-L98" />
+                  <SourceLink label="Main firmware hotfix" href="https://github.com/Coldcard/firmware/commit/ca72463709f4e3f8964952039d5caf955f566a87" />
+                  <SourceLink label="Mk2/Mk3 legacy hotfix" href="https://github.com/Coldcard/firmware/commit/4543629941a83a3e2788ac06a12b208338cb8314" />
+                </div>
+              </section>
+
+              <section>
+                <h3 className="font-serif text-lg text-white">Affected 4.0.0 release</h3>
+                <div className="mt-3 border-t border-white/10">
+                  <SourceLink label="Official 4.0.0 version history" href="https://coldcard.com/docs/version-history/#version-400-mar-17-2021" />
+                  <SourceLink label="4.0.0 seed-generation source" href="https://github.com/Coldcard/firmware/blob/75addaefcb5b1861e1c8986195a448ac3f94a303/shared/seed.py#L348-L359" />
+                  <SourceLink label="Signed 4.0.0 build / 17:20" href="https://github.com/Coldcard/firmware/blob/38f4e177c928fffc7c1378aac67f7dead8befe80/releases/signatures.txt#L5" />
+                  <SourceLink label="Signed 4.0.0 build / 17:24" href="https://github.com/Coldcard/firmware/blob/75addaefcb5b1861e1c8986195a448ac3f94a303/releases/signatures.txt#L5" />
+                </div>
+              </section>
+
+              <section>
+                <h3 className="font-serif text-lg text-white">Reported on-chain activity</h3>
+                <div className="mt-3 border-t border-white/10">
+                  <SourceLink label="Galaxy: revised first wave" href="https://x.com/glxyresearch/status/2083560956416741448" />
+                  <SourceLink label="Galaxy: three-wave estimate" href="https://x.com/glxyresearch/status/2083623500183421043" />
+                  <SourceLink label="Galaxy: limits of the classification" href="https://x.com/glxyresearch/status/2083623504285421622" />
+                  <SourceLink label="Alex Thorn: provisional fourth cluster" href="https://x.com/intangiblecoins/status/2084117621864046698" />
+                  <SourceLink label="Reported collection address" href="https://mempool.space/address/bc1qnk4zh9qcnap2mycp56qjrgza3cc8ylrh8fecp0" />
+                  <SourceLink label="Reported consolidation transaction" href="https://mempool.space/tx/0c6bf853a645b699a3b2cd6d8e3c44cf1a02a16f538df08212a44753f75d9d01" />
+                </div>
+              </section>
+
+              <section className="lg:col-span-2">
+                <h3 className="font-serif text-lg text-white">Cryptographic background</h3>
+                <div className="mt-3 grid border-t border-white/10 sm:grid-cols-2">
+                  <SourceLink label="BIP-39 specification" href="https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki" />
+                  <SourceLink label="Bitcoin.org Android RNG alert" href="https://bitcoin.org/en/alert/2013-08-11-android" />
+                  <SourceLink label="FPGA HMAC-SHA512 study" href="https://cacr.uwaterloo.ca/techreports/2011/cacr2011-10.pdf" />
+                  <SourceLink label="FPGA wallet-pipeline study" href="https://ietresearch.onlinelibrary.wiley.com/doi/10.1049/blc2.70028" />
+                  <SourceLink label="GPU PBKDF2 study" href="https://www.usenix.org/system/files/conference/woot16/woot16-paper-ruddick.pdf" />
+                </div>
+              </section>
             </div>
           </div>
         </details>
@@ -565,7 +759,7 @@ function RandomBeginning({ bits }: { bits: string[] }) {
   return (
     <div className="grid min-h-[21rem] items-center gap-8 lg:grid-cols-[0.7fr_auto_1.3fr]">
       <div>
-        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted">Many possible beginnings</p>
+        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted">What a real wallet needs / not to scale</p>
         <div className="mt-7 grid grid-cols-10 gap-2" aria-hidden="true">
           {Array.from({ length: 60 }, (_, index) => (
             <motion.span
@@ -592,7 +786,7 @@ function LimitedBeginnings({ bits }: { bits: string[] }) {
   return (
     <div className="grid min-h-[21rem] items-center gap-8 lg:grid-cols-[0.7fr_auto_1.3fr]">
       <div>
-        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">Small model</p>
+        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">Searchable teaching example</p>
         <p className="mt-3 font-serif text-2xl text-white">64 possible beginnings</p>
         <div className="mt-6 grid grid-cols-8 gap-2" aria-label="Sixty-four possible starting states">
           {Array.from({ length: TOY_SPACE }, (_, index) => (
@@ -634,7 +828,7 @@ function CandidateSearch({
   return (
     <div className="grid min-h-[21rem] items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
       <div>
-        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted">Possible beginnings</p>
+        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted">Candidate seeds</p>
         <p className="mt-3 font-serif text-2xl text-white">
           {candidate === null ? 'Ready' : found ? `Match: ${candidate + 1} of 64` : `Checking: ${candidate + 1} of 64`}
         </p>
@@ -662,24 +856,52 @@ function CandidateSearch({
 
       <div className="border-y border-white/15">
         <div className="grid grid-cols-[1fr_auto] items-center gap-5 border-b border-white/15 py-5">
-          <p className="font-serif text-lg text-white">Public address</p>
+          <div>
+            <p className="font-serif text-lg text-white">Public check</p>
+            <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.14em] text-ink-muted">Stand-in for wallet information</p>
+          </div>
           <CluePattern pattern={targetPattern} />
         </div>
         <div className="grid grid-cols-[1fr_auto] items-center gap-5 py-5">
-          <p className={`font-serif text-lg ${found ? 'text-accent' : 'text-white'}`}>
-            {found ? 'Match' : searching ? 'Checking' : 'Waiting'}
-          </p>
+          <div>
+            <p className={`font-serif text-lg ${found ? 'text-accent' : 'text-white'}`}>
+              {found ? 'Match' : searching ? 'Checking' : 'Waiting'}
+            </p>
+            <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.14em] text-ink-muted">Check produced by this guess</p>
+          </div>
           <CluePattern pattern={candidatePattern} matched={found} />
         </div>
+        <p className="border-t border-white/10 py-3 font-sans text-xs leading-relaxed text-ink-muted">
+          The tiles show 12 bits for readability. The demo compares the complete 256-bit SHA-256 value.
+        </p>
       </div>
 
       <p className="sr-only" aria-live="polite">
         {found
           ? `A matching toy candidate was found after ${candidate === null ? 0 : candidate + 1} checks.`
           : searching
-            ? `Checking candidate ${candidate === null ? 0 : candidate + 1} of 64.`
+            ? 'The toy search is running.'
             : 'The toy search is ready.'}
       </p>
+    </div>
+  );
+}
+
+function SearchLane({ activeIndex, label, result }: { activeIndex: number; label: string; result: string }) {
+  return (
+    <div>
+      <div className="flex items-center justify-between gap-4">
+        <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-ink-muted">{label}</p>
+        <p className="font-serif text-base text-white">{result}</p>
+      </div>
+      <div className="mt-4 grid grid-cols-8 gap-1.5" aria-hidden="true">
+        {Array.from({ length: TOY_SPACE }, (_, index) => (
+          <span
+            key={index}
+            className={`aspect-square border ${index === activeIndex ? 'border-accent bg-accent' : 'border-white/25'}`}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -727,7 +949,7 @@ function SourceLink({ href, label }: { href: string; label: string }) {
       href={href}
       target="_blank"
       rel="noreferrer"
-      className="flex min-h-14 items-center justify-between gap-4 border-b border-white/10 py-3 pr-4 font-mono text-[9px] uppercase tracking-[0.15em] text-ink-muted transition-colors hover:text-white sm:border-r sm:pl-4 sm:[&:nth-child(2n)]:border-r-0"
+      className="flex min-h-14 items-center justify-between gap-4 border-b border-white/10 py-3 pr-4 font-mono text-[10px] uppercase tracking-[0.14em] text-ink-muted transition-colors hover:text-white sm:pl-4"
     >
       {label}
       <ExternalLink size={13} className="shrink-0" aria-hidden="true" />

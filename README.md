@@ -1,14 +1,16 @@
 # Entropy Collapse
 
-A visual case study of the weak random-number fallback found in affected COLDCARD firmware. It shows how a cold wallet can remain offline yet still be exposed when its starting secret came from a search space that was too small.
+A visual case study of a COLDCARD seed-generation failure. A firmware integration mistake sent new-wallet creation through a deterministic software generator instead of the intended hardware-randomness path. The site shows why an offline wallet can still be exposed when the seed was created from too few plausible possibilities.
 
-The demonstration uses SHA-256 and a 64-candidate toy space. It does not generate wallet material, derive Bitcoin addresses, or reproduce the affected firmware. The page keeps practical guidance separate from the walkthrough and links affected owners to [Coinkite's current migration advisory](https://blog.coinkite.com/coldcard-mk3-seed-generation-warning/) and [official firmware downloads](https://coldcard.com/downloads/).
+The demonstration uses SHA-256 and a 64-candidate toy space. It does not generate wallet material, derive Bitcoin addresses, or reproduce the affected firmware. The page keeps practical guidance separate from the walkthrough and directs affected owners to [Coinkite's current migration advisory](https://blog.coinkite.com/coldcard-mk3-seed-generation-warning/), which links the correct download for each model and release track.
 
-The affected path is present in Mk2/Mk3 4.0.0 through 4.1.9. Coinkite's owner advisory currently begins its stated range at 4.0.1, while the signed 4.0.0 source already uses the affected seed-generation path. Fixed releases begin with Mk2/Mk3 4.2.0, Mk4/Mk5 standard 5.6.0, Q standard 1.5.0Q, Mk4/Mk5 Edge 6.6.0X, and Q Edge 6.6.0QX. Updating fixes new seed generation; it does not repair a seed that already exists. Coinkite does not consider a seed at risk from this issue alone if at least 50 fair, independent, private dice rolls were added when it was created. A strong, unique BIP39 passphrase adds a separate barrier, but Coinkite still advises replacing the affected seed as soon as practical.
+Coinkite's advisory lists Mk2/Mk3 4.0.1–4.1.9. Public 4.0.0 source and two signed build records show the same affected route, so this project conservatively includes 4.0.0. Fixed releases begin with Mk2/Mk3 4.2.0, Mk4/Mk5 standard 5.6.0, Q standard 1.5.0Q, Mk4/Mk5 Edge 6.6.0X, and Q Edge 6.6.0QX. Updating corrects future seed generation; it does not repair an existing seed.
 
-Galaxy Research estimates that three suspected sweep waves moved 1,367.05 BTC from 4,585 addresses. A separate 388.93 BTC cluster reported on 3 August as a likely fourth wave remains provisional and is not included in that estimate.
+Coinkite does not consider a seed at risk from this fault alone if at least 50 fair, independent, private dice rolls were added during seed creation. A strong, unique BIP-39 passphrase adds a separate barrier, but does not repair the seed. Coinkite still advises replacing the affected seed as soon as practical.
 
-BIP-39 makes each candidate pass through 2,048 HMAC-SHA512 steps. Published FPGA work shows that HMAC-SHA512, PBKDF2, BIP-32 key derivation, and secp256k1 can run in dedicated hardware. The studies do not implement a COLDCARD search or establish a current FPGA-versus-GPU result, custom-ASIC cost, or complete attack time. The page therefore treats dedicated hardware as technically possible, not as evidence that the estimated 72-bit later-model space is easy to search.
+Galaxy Research groups three suspected sweep waves whose transaction inputs total 1,367.05 BTC across 4,585 addresses. In a 3 August update, Alex Thorn reported a revised, separate provisional cluster of 448.73 BTC across 709 addresses and said the earlier set included 89 addresses from misclassified multisig transactions. The fourth cluster has no direct confirmation from affected owners and is not included in Galaxy's three-wave estimate. Galaxy says its classification is based on blockchain patterns, not on reconstructed seeds.
+
+BIP-39 derives a wallet seed with PBKDF2-HMAC-SHA512 using 2,048 iterations. Published research shows that individual hashing, PBKDF2, and wallet-derivation operations can be accelerated on GPUs or dedicated hardware. None of the linked studies benchmarks a complete search for this COLDCARD incident, establishes a current GPU-versus-FPGA result, or proves a practical attack time for later models.
 
 Built to explain the failure, not to reproduce an attack. This project is not affiliated with Coinkite or COLDCARD.
 
@@ -36,12 +38,18 @@ Pushing `main` runs the Node 24 deployment workflow. The published site is avail
 - [Block Engineering: Predictable RNG Fallback and 32-Bit Reseed in COLDCARD Firmware](https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware)
 - [Coinkite: Technical Deep Dive into the Entropy Issue](https://blog.coinkite.com/entropy-technical-backgrounder/)
 - [Coinkite: Security Advisory and migration instructions](https://blog.coinkite.com/coldcard-mk3-seed-generation-warning/)
-- [Galaxy Research: first observed sweep](https://x.com/glxyresearch/status/2083181683067506899)
+- [Galaxy Research: revised first-wave count](https://x.com/glxyresearch/status/2083560956416741448)
 - [Galaxy Research: three-wave estimate](https://x.com/glxyresearch/status/2083623500183421043)
-- [Alex Thorn: provisional fourth-wave report](https://x.com/intangiblecoins/status/2084079706320646300)
+- [Galaxy Research: limits of its on-chain classification](https://x.com/glxyresearch/status/2083623504285421622)
+- [Alex Thorn: revised provisional fourth-wave report](https://x.com/intangiblecoins/status/2084117621864046698)
 - [STMicroelectronics: STM32 96-bit UID structure](https://community.st.com/stm32-mcus-60/how-to-obtain-and-use-the-stm32-96-bit-uid-125456)
 - [MicroPython: fallback RNG initialization](https://github.com/Coldcard/micropython/blob/4107246f8a080807b62c3b4838e71e812ea68b6f/ports/stm32/rng.c#L74-L98)
-- [COLDCARD Mk2/Mk3 4.0.0 seed-generation source](https://github.com/Coldcard/firmware/blob/2021-03-17T1724-v4.0.0/shared/seed.py#L348-L359)
+- [COLDCARD official version history: 4.0.0](https://coldcard.com/docs/version-history/#version-400-mar-17-2021)
+- [COLDCARD Mk2/Mk3 4.0.0 seed-generation source](https://github.com/Coldcard/firmware/blob/75addaefcb5b1861e1c8986195a448ac3f94a303/shared/seed.py#L348-L359)
+- [Signed Mk2/Mk3 4.0.0 build record at 17:20](https://github.com/Coldcard/firmware/blob/38f4e177c928fffc7c1378aac67f7dead8befe80/releases/signatures.txt#L5)
+- [Signed Mk2/Mk3 4.0.0 build record at 17:24](https://github.com/Coldcard/firmware/blob/75addaefcb5b1861e1c8986195a448ac3f94a303/releases/signatures.txt#L5)
+- [Main firmware hardware-RNG hotfix](https://github.com/Coldcard/firmware/commit/ca72463709f4e3f8964952039d5caf955f566a87)
+- [Mk2/Mk3 legacy hardware-RNG hotfix](https://github.com/Coldcard/firmware/commit/4543629941a83a3e2788ac06a12b208338cb8314)
 - COLDCARD hotfix downloads: [Mk3 4.2.0](https://coldcard.com/downloads/mk3), [Mk4/Mk5 5.6.0](https://coldcard.com/downloads/mk), [Q 1.5.0Q](https://coldcard.com/downloads/q1), and [Edge 6.6.0X or 6.6.0QX](https://coldcard.com/downloads/edge)
 - [LLFOURN: early search-space model with explicit assumptions](https://x.com/LLFOURN/status/2082990000896147942)
 - [COLDCARD: verifying dice-roll entropy](https://coldcard.com/docs/verifying-dice-roll-math/)
