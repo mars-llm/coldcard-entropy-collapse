@@ -27,6 +27,25 @@ export function clueToTiles(clue: string, length = 12): string[] {
   return hexToBits(clue).slice(0, length);
 }
 
+export function randomToyCandidate(spaceSize: number, exclude?: number): number {
+  if (!Number.isInteger(spaceSize) || spaceSize < 2 || spaceSize > 256) {
+    throw new RangeError('spaceSize must be an integer between 2 and 256');
+  }
+
+  if (exclude !== undefined && (!Number.isInteger(exclude) || exclude < 0 || exclude >= spaceSize)) {
+    throw new RangeError('exclude must be a candidate inside the space');
+  }
+
+  const acceptedRange = Math.floor(256 / spaceSize) * spaceSize;
+  const sample = new Uint8Array(1);
+
+  do {
+    crypto.getRandomValues(sample);
+  } while (sample[0] >= acceptedRange || sample[0] % spaceSize === exclude);
+
+  return sample[0] % spaceSize;
+}
+
 export function searchDurationSeconds(
   bits: number,
   candidatesPerSecond: number,

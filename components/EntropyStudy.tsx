@@ -9,32 +9,32 @@ import {
   outputForCandidate,
   publicClueForCandidate,
   publicClueForOutput,
+  randomToyCandidate,
 } from '../lib/model';
 
-const TARGET_CANDIDATE = 43;
 const TOY_SPACE = 64;
 
 const STAGES = [
   {
     label: '1',
-    nav: 'Create a secret',
-    title: 'A real seed must be almost impossible to guess.',
-    body: 'This pattern is only a visual stand-in for a wallet seed.',
-    action: 'Start',
+    nav: 'Create a wallet',
+    title: 'Create a new toy wallet.',
+    body: 'The browser picks one hidden beginning at random. A real wallet needs far more than 64.',
+    action: 'Reveal the weak space',
   },
   {
     label: '2',
-    nav: 'Weak fallback',
-    title: 'The faulty route made the possible beginnings easier to search.',
-    body: 'This example uses just 64 possibilities so the search is easy to see.',
-    action: 'Shrink the choices',
+    nav: 'Reveal the weakness',
+    title: 'The bug leaves only 64 beginnings to check.',
+    body: 'Each mark below is a different possible seed in this teaching example.',
+    action: 'Search the list',
   },
   {
     label: '3',
-    nav: 'Test a guess',
+    nav: 'Check the guesses',
     title: 'A public wallet lets each guess be checked.',
-    body: 'It does not reveal the seed. It only shows whether a guess recreates the same wallet.',
-    action: 'Run the 64 guesses',
+    body: 'The search stops when one candidate recreates the same public pattern.',
+    action: 'Start the search',
   },
 ] as const;
 
@@ -76,6 +76,7 @@ function wait(milliseconds: number) {
 export function EntropyStudy() {
   const shouldReduceMotion = useReducedMotion();
   const [stage, setStage] = useState(0);
+  const [targetCandidate, setTargetCandidate] = useState(() => randomToyCandidate(TOY_SPACE));
   const [output, setOutput] = useState('');
   const [targetClue, setTargetClue] = useState('');
   const [candidate, setCandidate] = useState<number | null>(null);
@@ -87,7 +88,7 @@ export function EntropyStudy() {
   useEffect(() => {
     let active = true;
 
-    void outputForCandidate(TARGET_CANDIDATE).then(async (targetOutput) => {
+    void outputForCandidate(targetCandidate).then(async (targetOutput) => {
       const clue = await publicClueForOutput(targetOutput);
       if (!active) return;
       setOutput(targetOutput);
@@ -97,11 +98,11 @@ export function EntropyStudy() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [targetCandidate]);
 
   const outputBits = useMemo(() => hexToBits(output), [output]);
-  const targetPattern = useMemo(() => clueToTiles(targetClue), [targetClue]);
-  const candidatePattern = useMemo(() => clueToTiles(candidateClue), [candidateClue]);
+  const targetPattern = useMemo(() => clueToTiles(targetClue, 24), [targetClue]);
+  const candidatePattern = useMemo(() => clueToTiles(candidateClue, 24), [candidateClue]);
   const currentStage = STAGES[stage];
 
   const resetSearch = () => {
@@ -115,6 +116,14 @@ export function EntropyStudy() {
   const selectStage = (nextStage: number) => {
     resetSearch();
     setStage(nextStage);
+  };
+
+  const createToyWallet = () => {
+    resetSearch();
+    setStage(0);
+    setOutput('');
+    setTargetClue('');
+    setTargetCandidate((current) => randomToyCandidate(TOY_SPACE, current));
   };
 
   const runSearch = async () => {
@@ -147,6 +156,11 @@ export function EntropyStudy() {
   const continueStudy = () => {
     if (stage < STAGES.length - 1) {
       selectStage(stage + 1);
+      return;
+    }
+
+    if (found) {
+      createToyWallet();
       return;
     }
 
@@ -476,10 +490,10 @@ export function EntropyStudy() {
                   <button
                     type="button"
                     onClick={continueStudy}
-                    disabled={searching || (stage === 2 && !targetClue)}
+                    disabled={searching || !targetClue}
                     className="flex min-h-11 items-center gap-3 border border-white/40 bg-white px-4 font-mono text-[10px] uppercase tracking-[0.15em] text-black transition-colors hover:bg-ink disabled:cursor-wait disabled:opacity-50"
                   >
-                    {searching ? 'Checking' : found ? 'Run again' : currentStage.action}
+                    {searching ? 'Checking' : found ? 'New toy wallet' : currentStage.action}
                     {found ? <RotateCcw size={14} aria-hidden="true" /> : <ArrowRight size={14} aria-hidden="true" />}
                   </button>
                 </div>
@@ -492,8 +506,8 @@ export function EntropyStudy() {
                   animate={{ opacity: 1 }}
                   transition={{ duration: shouldReduceMotion ? 0 : 0.2 }}
                 >
-                  {stage === 0 && <RandomBeginning bits={outputBits} />}
-                  {stage === 1 && <LimitedBeginnings bits={outputBits} />}
+                  {stage === 0 && <RandomBeginning key={output} bits={outputBits} onRegenerate={createToyWallet} />}
+                  {stage === 1 && <LimitedBeginnings targetPattern={targetPattern} />}
                   {stage === 2 && (
                     <CandidateSearch
                       candidate={candidate}
@@ -510,89 +524,6 @@ export function EntropyStudy() {
             <p className="mt-7 max-w-3xl border-l-2 border-accent pl-4 font-serif text-lg leading-relaxed text-ink">
               The public wallet supplies the check. It does not reveal the seed.
             </p>
-          </div>
-        </section>
-
-        <section id="numbers" className="scroll-mt-20 border-b border-white/10 bg-white/[0.025] px-4 py-12 md:px-8 md:py-16">
-          <div className="mx-auto max-w-6xl">
-            <div className="max-w-2xl">
-              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">Search is not collision</p>
-              <h2 className="mt-3 font-serif text-3xl leading-tight text-white">Finding one seed does not mean two wallets shared it.</h2>
-            </div>
-
-            <dl className="mt-9 grid border-y border-white/15 sm:grid-cols-2">
-              <div className="border-b border-white/10 py-6 sm:border-b-0 sm:border-r sm:pr-7">
-                <dt className="font-serif text-xl text-white">Searchable</dt>
-                <dd className="mt-3 font-sans text-sm leading-relaxed text-ink-muted">Someone tests likely seeds until one recreates the target wallet.</dd>
-              </div>
-              <div className="py-6 sm:pl-7">
-                <dt className="font-serif text-xl text-white">Duplicated — also called a collision</dt>
-                <dd className="mt-3 font-sans text-sm leading-relaxed text-ink-muted">Two wallets began from exactly the same seed. An attacker does not need this to find either wallet.</dd>
-              </div>
-            </dl>
-
-            <div className="mt-8 border-y border-white/15 py-7">
-              <div className="grid items-center gap-7 lg:grid-cols-[1fr_auto_1fr]">
-                <SearchLane label="Search for wallet A" result="Seed A found" activeIndex={17} />
-                <p className="text-center font-serif text-3xl text-accent" aria-label="does not equal">≠</p>
-                <SearchLane label="Search for wallet B" result="Seed B found" activeIndex={43} />
-              </div>
-              <p className="mt-6 text-center font-sans text-sm leading-relaxed text-ink-muted">
-                Both searches can succeed and still end at different seeds.
-              </p>
-            </div>
-
-            <div className="mt-8 grid gap-4 border-l-2 border-accent pl-5 sm:grid-cols-[12rem_1fr] sm:gap-8">
-              <p className="font-serif text-lg text-white">What the code establishes</p>
-              <div className="max-w-3xl font-sans text-sm leading-relaxed text-ink-muted">
-                <p>
-                  The code does not show every wallet choosing from one shared list of 4.3 billion complete seeds. Block found a four-byte input on later models, but earlier calls and other software state also shaped the final seed. No duplicate seed has been confirmed.
-                </p>
-                <a
-                  href="https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-3 inline-flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.15em] text-white underline decoration-accent underline-offset-4 hover:text-accent"
-                >
-                  Read Block&apos;s analysis
-                  <ExternalLink size={11} aria-hidden="true" />
-                </a>
-              </div>
-            </div>
-
-            <div className="mt-12 border-t border-white/15 pt-9">
-              <div className="max-w-2xl">
-                <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">What the bit figures mean</p>
-                <p className="mt-3 font-sans text-sm leading-relaxed text-ink-muted">
-                  These are estimates, not measured attack times, collision rates, or promises of how long funds remain safe.
-                </p>
-              </div>
-
-              <dl className="mt-7 grid border-y border-white/15 lg:grid-cols-3">
-                <div className="border-b border-white/10 py-6 lg:border-b-0 lg:border-r lg:pr-7">
-                  <dt className="font-serif text-3xl text-white">2³²</dt>
-                  <dd className="mt-3 font-sans text-sm leading-relaxed text-ink-muted">Block counted the possible values in one four-byte later-model input while holding the rest of the software state fixed.</dd>
-                </div>
-                <div className="border-b border-white/10 py-6 lg:border-b-0 lg:border-r lg:px-7">
-                  <dt className="font-serif text-3xl text-white">About 40 bits</dt>
-                  <dd className="mt-3 font-sans text-sm leading-relaxed text-ink-muted">Coinkite&apos;s preliminary, broader search estimate for affected Mk2 and Mk3 seeds.</dd>
-                </div>
-                <div className="py-6 lg:pl-7">
-                  <dt className="font-serif text-3xl text-white">About 72 bits</dt>
-                  <dd className="mt-3 font-sans text-sm leading-relaxed text-ink-muted">Coinkite&apos;s preliminary, broader search estimate for affected Mk4, Mk5, and Q seeds. No public end-to-end benchmark establishes a specific time.</dd>
-                </div>
-              </dl>
-
-              <a
-                href="https://blog.coinkite.com/entropy-technical-backgrounder/"
-                target="_blank"
-                rel="noreferrer"
-                className="mt-5 inline-flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.15em] text-white underline decoration-accent underline-offset-4 hover:text-accent"
-              >
-                Read Coinkite&apos;s technical estimate
-                <ExternalLink size={11} aria-hidden="true" />
-              </a>
-            </div>
           </div>
         </section>
 
@@ -653,6 +584,9 @@ export function EntropyStudy() {
                 <div className="mt-4 space-y-4 font-sans text-sm leading-relaxed text-ink-muted">
                   <p>
                     Testing a guess requires BIP-39 and wallet-address derivation. Published GPU and FPGA studies cover parts of that work, not a complete COLDCARD search. No public end-to-end benchmark establishes the time or cost for later models.
+                  </p>
+                  <p>
+                    Coinkite&apos;s preliminary estimates are about 40 bits for affected Mk2/Mk3 seeds and about 72 bits for Mk4/Mk5/Q. Block separately counted 2³² possible values for one later-model input while holding the remaining state fixed. These are not measured attack times.
                   </p>
                 </div>
               </section>
@@ -742,58 +676,68 @@ export function EntropyStudy() {
   );
 }
 
-function RandomBeginning({ bits }: { bits: string[] }) {
+function RandomBeginning({ bits, onRegenerate }: { bits: string[]; onRegenerate: () => void }) {
+  const bars = Array.from({ length: 64 }, (_, index) => {
+    const nibble = bits.slice(index * 4, index * 4 + 4).join('');
+    return Number.parseInt(nibble || '0', 2);
+  });
+
   return (
-    <div className="grid min-h-[21rem] items-center gap-8 lg:grid-cols-[0.7fr_auto_1.3fr]">
+    <div className="grid min-h-[21rem] items-center gap-8 lg:grid-cols-[1fr_auto_1.15fr]">
       <div>
-        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted">What a real wallet needs / not to scale</p>
-        <div className="mt-7 grid grid-cols-10 gap-2" aria-hidden="true">
-          {Array.from({ length: 60 }, (_, index) => (
+        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted">Visual fingerprint of this toy secret</p>
+        <div className="mt-5 flex h-44 items-end gap-[2px] border-y border-white/15 py-5" aria-hidden="true">
+          {bars.map((value, index) => (
             <motion.span
               key={index}
-              className="aspect-square rounded-full bg-white"
-              animate={{ opacity: [0.08, 0.7, 0.08] }}
-              transition={{ duration: 1.8 + (index % 5) * 0.22, delay: (index % 11) * 0.08, repeat: Number.POSITIVE_INFINITY }}
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: `${18 + value * 5.2}%`, opacity: 0.2 + value / 20 }}
+              transition={{ duration: 0.35, delay: index * 0.006 }}
+              className="min-w-0 flex-1 bg-white"
             />
           ))}
         </div>
+        <button
+          type="button"
+          onClick={onRegenerate}
+          disabled={bits.length === 0}
+          className="mt-4 inline-flex min-h-11 items-center gap-2 font-mono text-[9px] uppercase tracking-[0.15em] text-ink-muted transition-colors hover:text-white disabled:opacity-40"
+        >
+          <RotateCcw size={12} aria-hidden="true" />
+          Create another
+        </button>
       </div>
 
       <ArrowRight className="hidden text-ink-muted lg:block" size={20} strokeWidth={1.2} aria-hidden="true" />
 
       <div>
-        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted">Wallet secret</p>
+        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted">The same toy secret / 256 bits</p>
         <BitField bits={bits} />
       </div>
     </div>
   );
 }
 
-function LimitedBeginnings({ bits }: { bits: string[] }) {
+function LimitedBeginnings({ targetPattern }: { targetPattern: string[] }) {
   return (
-    <div className="grid min-h-[21rem] items-center gap-8 lg:grid-cols-[0.7fr_auto_1.3fr]">
+    <div className="grid min-h-[21rem] items-center gap-10 lg:grid-cols-[1.1fr_auto_0.9fr]">
       <div>
-        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">Searchable teaching example</p>
+        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">The complete toy search space</p>
         <p className="mt-3 font-serif text-2xl text-white">64 possible beginnings</p>
-        <div className="mt-6 grid grid-cols-8 gap-2" aria-label="Sixty-four possible starting states">
-          {Array.from({ length: TOY_SPACE }, (_, index) => (
-            <motion.span
-              key={index}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.45 }}
-              transition={{ delay: index * 0.008 }}
-              className="aspect-square border border-white/45"
-              aria-hidden="true"
-            />
-          ))}
-        </div>
+        <CandidatePool />
       </div>
 
       <ArrowRight className="hidden text-accent lg:block" size={20} strokeWidth={1.2} aria-hidden="true" />
 
-      <div>
-        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted">Wallet secret</p>
-        <BitField bits={bits} />
+      <div className="border-y border-white/15 py-6">
+        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted">Public wallet pattern</p>
+        <p className="mt-3 font-serif text-2xl text-white">The search target</p>
+        <div className="mt-6">
+          <CluePattern pattern={targetPattern} />
+        </div>
+        <p className="mt-5 max-w-sm font-sans text-xs leading-relaxed text-ink-muted">
+          One candidate in the list produces this pattern. The pattern does not reveal which one.
+        </p>
       </div>
     </div>
   );
@@ -819,26 +763,7 @@ function CandidateSearch({
         <p className="mt-3 font-serif text-2xl text-white">
           {candidate === null ? 'Ready' : found ? `Match: ${candidate + 1} of 64` : `Checking: ${candidate + 1} of 64`}
         </p>
-        <div className="mt-6 grid grid-cols-8 gap-2" aria-label="Toy candidate search">
-          {Array.from({ length: TOY_SPACE }, (_, index) => {
-            const tested = candidate !== null && index < candidate;
-            const active = candidate === index;
-
-            return (
-              <motion.span
-                key={index}
-                animate={{
-                  backgroundColor: active ? (found ? '#3b82f6' : '#d4d4d4') : 'rgba(255,255,255,0)',
-                  borderColor: active ? (found ? '#3b82f6' : '#d4d4d4') : 'rgba(255,255,255,0.24)',
-                  opacity: tested ? 0.14 : 1,
-                }}
-                transition={{ duration: 0.08 }}
-                className="aspect-square border"
-                aria-hidden="true"
-              />
-            );
-          })}
-        </div>
+        <CandidatePool candidate={candidate} found={found} />
       </div>
 
       <div className="border-y border-white/15">
@@ -859,7 +784,7 @@ function CandidateSearch({
           <CluePattern pattern={candidatePattern} matched={found} />
         </div>
         <p className="border-t border-white/10 py-3 font-sans text-xs leading-relaxed text-ink-muted">
-          The tiles show 12 bits for readability. The demo compares the complete 256-bit SHA-256 value.
+          The tiles show 24 bits for readability. The demo compares the complete 256-bit SHA-256 value.
         </p>
       </div>
 
@@ -874,23 +799,82 @@ function CandidateSearch({
   );
 }
 
-function SearchLane({ activeIndex, label, result }: { activeIndex: number; label: string; result: string }) {
+function CandidatePool({ candidate = null, found = false }: { candidate?: number | null; found?: boolean }) {
+  const checked = candidate === null ? 0 : candidate + 1;
+
   return (
-    <div>
-      <div className="flex items-center justify-between gap-4">
-        <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-ink-muted">{label}</p>
-        <p className="font-serif text-base text-white">{result}</p>
-      </div>
-      <div className="mt-4 grid grid-cols-8 gap-1.5" aria-hidden="true">
+    <div className="mt-6">
+      <div className="grid grid-cols-8 gap-2" aria-label="Sixty-four toy candidate seeds">
         {Array.from({ length: TOY_SPACE }, (_, index) => (
-          <span
+          <CandidateMark
             key={index}
-            className={`aspect-square border ${index === activeIndex ? 'border-accent bg-accent' : 'border-white/25'}`}
+            index={index}
+            active={candidate === index}
+            tested={candidate !== null && index < candidate}
+            found={found && candidate === index}
           />
         ))}
       </div>
+      <div className="mt-4 flex items-center gap-4">
+        <div className="h-px flex-1 bg-white/15">
+          <motion.div
+            className={`h-px ${found ? 'bg-accent' : 'bg-white'}`}
+            animate={{ width: `${(checked / TOY_SPACE) * 100}%` }}
+            transition={{ duration: 0.08 }}
+          />
+        </div>
+        <p className="w-16 text-right font-mono text-[9px] uppercase tracking-[0.14em] text-ink-muted">
+          {candidate === null ? '64 total' : `${checked} / 64`}
+        </p>
+      </div>
     </div>
   );
+}
+
+function CandidateMark({
+  active,
+  found,
+  index,
+  tested,
+}: {
+  active: boolean;
+  found: boolean;
+  index: number;
+  tested: boolean;
+}) {
+  let mark = Math.imul(index + 1, 0x45d9f3b) >>> 0;
+  mark ^= mark >>> 16;
+  const markBits = Array.from({ length: 9 }, (_, bit) => ((mark >>> bit) & 1) === 1);
+
+  return (
+    <motion.span
+      initial={{ opacity: 0, scale: 0.72 }}
+      animate={{
+        backgroundColor: active ? (found ? 'rgba(59,130,246,0.2)' : '#d4d4d4') : 'rgba(255,255,255,0)',
+        borderColor: active ? (found ? '#3b82f6' : '#d4d4d4') : 'rgba(255,255,255,0.24)',
+        opacity: tested ? 0.12 : 1,
+        scale: active ? 1.08 : 1,
+      }}
+      transition={{ duration: 0.12, delay: candidateRevealDelay(index, active) }}
+      className="aspect-square border p-[3px]"
+      aria-label={`Candidate ${index + 1}${active ? found ? ', match' : ', checking' : tested ? ', checked' : ''}`}
+    >
+      <span className="grid size-full grid-cols-3 gap-[2px]" aria-hidden="true">
+        {markBits.map((bit, bitIndex) => (
+          <span
+            key={bitIndex}
+            className={bit
+              ? active && !found ? 'bg-canvas' : 'bg-white'
+              : active && !found ? 'border border-canvas/35' : 'border border-white/20'}
+          />
+        ))}
+      </span>
+    </motion.span>
+  );
+}
+
+function candidateRevealDelay(index: number, active: boolean) {
+  return active ? 0 : index * 0.004;
 }
 
 function BitField({ bits }: { bits: string[] }) {
@@ -915,8 +899,8 @@ function BitField({ bits }: { bits: string[] }) {
 
 function CluePattern({ pattern, matched = false }: { pattern: string[]; matched?: boolean }) {
   return (
-    <div className="grid w-28 grid-cols-6 gap-1.5" aria-hidden="true">
-      {Array.from({ length: 12 }, (_, index) => (
+    <div className="grid w-36 grid-cols-8 gap-1.5 sm:w-44" aria-hidden="true">
+      {Array.from({ length: 24 }, (_, index) => (
         <motion.span
           key={index}
           animate={{

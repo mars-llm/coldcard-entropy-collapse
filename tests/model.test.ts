@@ -6,6 +6,7 @@ import {
   outputForCandidate,
   publicClueForCandidate,
   publicClueForOutput,
+  randomToyCandidate,
   randomWordBits,
   searchDurationSeconds,
 } from '../lib/model';
@@ -34,17 +35,27 @@ describe('toy candidate model', () => {
     expect(clue).toHaveLength(64);
   });
 
-  it('keeps the target pattern visually unique inside the 64-candidate model', async () => {
-    const targetPattern = clueToTiles(await publicClueForCandidate(43)).join('');
-    const otherPatterns = await Promise.all(
-      Array.from({ length: 64 }, (_, candidate) => (
-        candidate === 43
-          ? Promise.resolve('')
-          : publicClueForCandidate(candidate).then((clue) => clueToTiles(clue).join(''))
+  it('keeps every 24-bit display pattern unique inside the 64-candidate model', async () => {
+    const patterns = await Promise.all(
+      Array.from({ length: 64 }, async (_, candidate) => (
+        clueToTiles(await publicClueForCandidate(candidate), 24).join('')
       )),
     );
 
-    expect(otherPatterns).not.toContain(targetPattern);
+    expect(new Set(patterns)).toHaveLength(64);
+  });
+
+  it('chooses a fresh candidate inside the toy space', () => {
+    const previous = 43;
+    const candidates = Array.from({ length: 128 }, () => randomToyCandidate(64, previous));
+
+    expect(candidates.every((candidate) => candidate >= 0 && candidate < 64)).toBe(true);
+    expect(candidates).not.toContain(previous);
+  });
+
+  it('rejects invalid toy spaces and exclusions', () => {
+    expect(() => randomToyCandidate(1)).toThrow(RangeError);
+    expect(() => randomToyCandidate(64, 64)).toThrow(RangeError);
   });
 });
 
