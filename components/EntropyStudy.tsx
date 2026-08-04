@@ -576,6 +576,9 @@ export function EntropyStudy() {
                   <p>
                     Coinkite lists Mk2/Mk3 4.0.1–4.1.9. Public source and signed release records also show the affected route in 4.0.0 and in Mk3 builds 5.0.1-mk3 and 5.0.3-mk3. This page keeps that difference explicit.
                   </p>
+                  <p>
+                    Follow-up patches propose using the full 32-byte secure-element digest on later models and checking the hardware-RNG path at startup. As of 4 August, both changes are still under review and are not part of a released update.
+                  </p>
                 </div>
               </section>
 
@@ -627,6 +630,8 @@ export function EntropyStudy() {
                   <SourceLink label="MicroPython fallback source" href="https://github.com/Coldcard/micropython/blob/4107246f8a080807b62c3b4838e71e812ea68b6f/ports/stm32/rng.c#L74-L98" />
                   <SourceLink label="Main firmware hotfix" href="https://github.com/Coldcard/firmware/commit/ca72463709f4e3f8964952039d5caf955f566a87" />
                   <SourceLink label="Mk2/Mk3 legacy hotfix" href="https://github.com/Coldcard/firmware/commit/4543629941a83a3e2788ac06a12b208338cb8314" />
+                  <SourceLink label="Open full-digest reseed proposal" href="https://github.com/Coldcard/firmware/pull/697" />
+                  <SourceLink label="Open RNG startup-check proposal" href="https://github.com/Coldcard/firmware/pull/694" />
                 </div>
               </section>
 
