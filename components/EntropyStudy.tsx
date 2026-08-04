@@ -17,53 +17,53 @@ const TOY_SPACE = 64;
 const STAGES = [
   {
     label: '1',
-    nav: 'Create a wallet',
-    title: 'Create a new toy wallet.',
-    body: 'The browser picks one hidden beginning at random. A real wallet needs far more than 64.',
-    action: 'Reveal the weak space',
+    nav: 'Choose one',
+    title: 'The browser picks one value from 64.',
+    body: 'A real wallet should have vastly more possible starting values.',
+    action: 'Show all 64',
   },
   {
     label: '2',
-    nav: 'Reveal the weakness',
-    title: 'The bug leaves only 64 beginnings to check.',
-    body: 'Each mark below is a different possible seed in this teaching example.',
-    action: 'Search the list',
+    nav: 'See all 64',
+    title: 'These are all 64 possible starting values.',
+    body: 'Because the list is small, every value can be checked.',
+    action: 'Set up the check',
   },
   {
     label: '3',
-    nav: 'Check the guesses',
-    title: 'A public wallet lets each guess be checked.',
-    body: 'The search stops when one candidate recreates the same public pattern.',
-    action: 'Start the search',
+    nav: 'Try each one',
+    title: 'Try each value until the result matches.',
+    body: 'The demo compares SHA-256 results. A real wallet search would derive addresses and compare them with public wallet data.',
+    action: 'Start checking',
   },
 ] as const;
 
 const TIMELINE = [
   {
     date: '1 March 2021',
-    title: 'Seed generation changed path',
-    body: 'A code change sent new-seed creation through ngu.random. Firmware 4.0.0 shipped that route on 17 March.',
+    title: 'A code change rerouted seed generation',
+    body: 'New-seed creation moved to ngu.random. Firmware 4.0.0 shipped with that change on 17 March.',
     sourceHref: 'https://github.com/Coldcard/firmware/commit/b18723dddb6d751c39978e4364b56b2414f68b47',
     sourceLabel: 'Firmware change',
   },
   {
     date: '11 March 2022',
-    title: 'Later models added another input',
-    body: 'Mk4 added data from two secure elements, but only four bytes entered the software generator.',
+    title: 'Later models added data from two secure elements',
+    body: 'Mk4 hashed data from both secure elements, then passed only four bytes of the result into the software generator.',
     sourceHref: 'https://github.com/Coldcard/firmware/commit/01cb43f7e87cc806963a74cbe0fcb4155f23a2a3',
     sourceLabel: 'Reseed change',
   },
   {
     date: '30 July 2026 UTC',
-    title: 'Reported sweeps triggered investigation',
-    body: 'Researchers reported coordinated sweeps and traced the failure to the firmware. Blockchain data alone cannot identify the original device.',
+    title: 'Wallet sweeps led researchers back to the firmware',
+    body: 'After coordinated sweeps were reported, independent researchers found the broken random-number path. Blockchain data alone cannot show which device or firmware created a wallet.',
     sourceHref: 'https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware',
     sourceLabel: 'Independent firmware analysis',
   },
   {
     date: '31 July 2026',
-    title: 'Fixed firmware became available',
-    body: 'Coinkite released fixed firmware for every affected model and release track. Existing seeds still had to be replaced.',
+    title: 'Coinkite released fixed firmware',
+    body: 'The updates repair new seed generation. Seeds made earlier on affected firmware still need to be replaced.',
     sourceHref: 'https://blog.coinkite.com/coldcard-mk3-seed-generation-warning/',
     sourceLabel: 'Official advisory',
   },
@@ -361,30 +361,30 @@ export function EntropyStudy() {
         <section id="failure" className="scroll-mt-20 border-b border-white/10 px-4 py-12 md:px-8 md:py-16">
           <div className="mx-auto max-w-6xl">
             <div className="max-w-2xl">
-              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">The one-minute explanation</p>
-              <h2 className="mt-3 font-serif text-3xl leading-tight text-white">The wallet asked for random bytes. The request reached the wrong code.</h2>
+              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">What went wrong</p>
+              <h2 className="mt-3 font-serif text-3xl leading-tight text-white">The firmware bypassed the hardware RNG when it created a seed.</h2>
               <p className="mt-3 font-sans text-sm leading-relaxed text-ink-muted">
-                The hardware source still worked. New-wallet creation no longer reached it.
+                The bug was not in the random-number chip. A 2021 code change sent new-wallet creation to a predictable software generator instead.
               </p>
             </div>
 
             <div className="mt-9 border-y border-white/15">
               <div className="grid gap-4 border-b border-white/10 py-6 sm:grid-cols-[9rem_1fr_auto] sm:items-center sm:gap-8">
-                <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted">Expected route</p>
-                <p className="font-serif text-xl text-white">New wallet → hardware-generated random bytes → seed material</p>
-                <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-ink-muted">Designed path</span>
+                <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted">What should happen</p>
+                <p className="font-serif text-xl text-white">New wallet → hardware RNG → seed</p>
+                <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-ink-muted">Intended</span>
               </div>
               <div className="grid gap-4 py-6 sm:grid-cols-[9rem_1fr_auto] sm:items-center sm:gap-8">
-                <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">Affected route</p>
-                <p className="font-serif text-xl text-white">New wallet → software fallback → seed from limited device and timing inputs</p>
-                <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-accent">Affected builds</span>
+                <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">What happened</p>
+                <p className="font-serif text-xl text-white">New wallet → predictable software generator → seed</p>
+                <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-accent">Affected firmware</span>
               </div>
             </div>
 
             <div className="mt-7 grid gap-4 border-l-2 border-accent pl-5 sm:grid-cols-[12rem_1fr] sm:gap-8">
-              <p className="font-serif text-lg text-white">Why offline was not enough</p>
+              <p className="font-serif text-lg text-white">So how could an offline wallet be stolen?</p>
               <p className="max-w-3xl font-sans text-sm leading-relaxed text-ink-muted">
-                An attacker could recreate candidate seeds elsewhere and check them against public wallet information. The device never had to be touched or connected. Bitcoin&apos;s cryptography was not broken; the weakness was in seed creation.
+                The seed was weak from the moment it was created. An attacker could reproduce possible seeds on another computer and use public Bitcoin addresses to see when a guess was right. They never needed the COLDCARD. Bitcoin itself was not broken.
               </p>
             </div>
           </div>
@@ -394,7 +394,7 @@ export function EntropyStudy() {
           <div className="mx-auto max-w-6xl">
             <div className="max-w-2xl">
               <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">What happened</p>
-              <h2 className="mt-3 font-serif text-3xl text-white">How the bug got in—and how it was fixed.</h2>
+              <h2 className="mt-3 font-serif text-3xl text-white">The bug shipped in 2021. The fix arrived in 2026.</h2>
             </div>
 
             <ol className="relative mt-10 border-l border-white/20">
@@ -427,10 +427,10 @@ export function EntropyStudy() {
         <section id="mechanism" className="scroll-mt-20 border-b border-white/10 px-4 py-12 md:px-8 md:py-16">
           <div className="mx-auto max-w-6xl">
             <div className="max-w-2xl">
-              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">Interactive explanation</p>
-              <h2 className="mt-3 font-serif text-3xl leading-tight text-white">Try the search with 64 harmless examples.</h2>
+              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">See how the search works</p>
+              <h2 className="mt-3 font-serif text-3xl leading-tight text-white">Hide one value in a list of 64. Then find it.</h2>
               <p className="mt-3 font-sans text-sm leading-relaxed text-ink-muted">
-                This demo keeps one essential point: if the possible seeds become searchable, public wallet information can confirm a guess. It creates no Bitcoin keys or addresses.
+                This is a safe, cut-down example. It checks made-up values one by one and creates no Bitcoin keys or addresses.
               </p>
             </div>
 
@@ -522,7 +522,7 @@ export function EntropyStudy() {
             </div>
 
             <p className="mt-7 max-w-3xl border-l-2 border-accent pl-4 font-serif text-lg leading-relaxed text-ink">
-              The public wallet supplies the check. It does not reveal the seed.
+              A public address does not reveal the seed. It only tells an attacker when a guess produces the right wallet.
             </p>
           </div>
         </section>
@@ -547,7 +547,7 @@ export function EntropyStudy() {
             <div>
               <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">Evidence and caveats</p>
               <p className="mt-2 font-serif text-xl text-white">Sources and technical detail</p>
-              <p className="mt-2 font-sans text-sm text-ink-muted">The detailed record and primary sources.</p>
+              <p className="mt-2 font-sans text-sm text-ink-muted">Code, incident counts, open questions, and source links.</p>
             </div>
             <span className="flex size-11 shrink-0 items-center justify-center border border-accent/70 font-mono text-lg text-white transition-transform group-hover:bg-accent group-hover:text-canvas group-open:rotate-45 group-open:bg-accent group-open:text-canvas" aria-hidden="true">
               +
@@ -559,7 +559,7 @@ export function EntropyStudy() {
                 <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">Incident record</p>
                 <div className="mt-4 space-y-4 font-sans text-sm leading-relaxed text-ink-muted">
                   <p>
-                    Galaxy Research&apos;s blockchain analysis groups three suspected sweep waves whose transaction inputs total 1,367.05 BTC across 4,585 addresses. Its revised first wave moved 1,082.65 BTC from 1,195 addresses in 41 minutes on 30 July UTC.
+                    Galaxy Research grouped three suspected sweep waves: 1,367.05 BTC from 4,585 addresses. Its revised count for the first wave is 1,082.65 BTC from 1,195 addresses, moved in 41 minutes on 30 July UTC.
                   </p>
                   <p>
                     Alex Thorn later reported a separate, provisional cluster of 448.73 BTC across 709 addresses after removing 89 misclassified multisig addresses. It had no direct confirmation from affected owners, so it is not added to Galaxy&apos;s total. Blockchain patterns can group suspected sweeps; they cannot identify the original device or firmware.
@@ -574,10 +574,10 @@ export function EntropyStudy() {
                     MicroPython initialized the fallback from one 32-bit word of the chip ID, the current phase of a repeating processor counter, and two raw clock-register values. Earlier calls then advanced the generator before seed creation. The processor counter was not a timestamp, and no published hardware study has measured how these values are distributed across many devices and boots.
                   </p>
                   <p>
-                    Coinkite lists Mk2/Mk3 4.0.1–4.1.9. Public source and signed release records also show the affected route in 4.0.0 and in Mk3 builds 5.0.1-mk3 and 5.0.3-mk3. This page keeps that difference explicit.
+                    Coinkite lists Mk2/Mk3 4.0.1–4.1.9. Public source and signed release records also show the affected route in 4.0.0 and in Mk3 builds 5.0.1-mk3 and 5.0.3-mk3. That is why the table above includes all three.
                   </p>
                   <p>
-                    Follow-up patches propose using the full 32-byte secure-element digest on later models and checking the hardware-RNG path at startup. As of 4 August, both changes are still under review and are not part of a released update.
+                    Two proposed patches would use the full 32-byte secure-element digest on later models and check the hardware-RNG path at startup. As of 4 August, neither patch has been released.
                   </p>
                 </div>
               </section>
@@ -605,7 +605,7 @@ export function EntropyStudy() {
             </div>
 
             <p className="mt-9 max-w-3xl border-t border-white/10 pt-6 font-sans text-sm leading-relaxed text-ink-muted">
-              The demo uses SHA-256 and 64 simulated secrets. It handles no wallet material and does not reproduce COLDCARD firmware.
+              The demo hashes 64 made-up values. It never sees your wallet data and does not run COLDCARD firmware.
             </p>
 
             <div className="mt-8 grid gap-8 border-t border-white/10 pt-8 lg:grid-cols-2">
@@ -693,7 +693,7 @@ function RandomBeginning({ bits, onRegenerate }: { bits: string[]; onRegenerate:
   return (
     <div className="grid min-h-[21rem] items-center gap-8 lg:grid-cols-[1fr_auto_1.15fr]">
       <div>
-        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted">Visual fingerprint of this toy secret</p>
+        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted">One randomly chosen value</p>
         <div className="mt-5 flex h-44 items-end gap-[2px] border-y border-white/15 py-5" aria-hidden="true">
           {bars.map((value, index) => (
             <motion.span
@@ -719,7 +719,7 @@ function RandomBeginning({ bits, onRegenerate }: { bits: string[]; onRegenerate:
       <ArrowRight className="hidden text-ink-muted lg:block" size={20} strokeWidth={1.2} aria-hidden="true" />
 
       <div>
-        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted">The same toy secret / 256 bits</p>
+        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted">The same value shown as 256 bits</p>
         <BitField bits={bits} />
       </div>
     </div>
@@ -730,21 +730,21 @@ function LimitedBeginnings({ targetPattern }: { targetPattern: string[] }) {
   return (
     <div className="grid min-h-[21rem] items-center gap-10 lg:grid-cols-[1.1fr_auto_0.9fr]">
       <div>
-        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">The complete toy search space</p>
-        <p className="mt-3 font-serif text-2xl text-white">64 possible beginnings</p>
+        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">Every possible value in this demo</p>
+        <p className="mt-3 font-serif text-2xl text-white">64 in total</p>
         <CandidatePool />
       </div>
 
       <ArrowRight className="hidden text-accent lg:block" size={20} strokeWidth={1.2} aria-hidden="true" />
 
       <div className="border-y border-white/15 py-6">
-        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted">Public wallet pattern</p>
-        <p className="mt-3 font-serif text-2xl text-white">The search target</p>
+        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted">Result to match</p>
+        <p className="mt-3 font-serif text-2xl text-white">This is what we are looking for</p>
         <div className="mt-6">
           <CluePattern pattern={targetPattern} />
         </div>
         <p className="mt-5 max-w-sm font-sans text-xs leading-relaxed text-ink-muted">
-          One candidate in the list produces this pattern. The pattern does not reveal which one.
+          Exactly one of the 64 values produces this result. To find it, the list has to be checked.
         </p>
       </div>
     </div>
@@ -767,7 +767,7 @@ function CandidateSearch({
   return (
     <div className="grid min-h-[21rem] items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
       <div>
-        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted">Candidate seeds</p>
+        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted">Values to check</p>
         <p className="mt-3 font-serif text-2xl text-white">
           {candidate === null ? 'Ready' : found ? `Match: ${candidate + 1} of 64` : `Checking: ${candidate + 1} of 64`}
         </p>
@@ -777,22 +777,22 @@ function CandidateSearch({
       <div className="border-y border-white/15">
         <div className="grid grid-cols-[1fr_auto] items-center gap-5 border-b border-white/15 py-5">
           <div>
-            <p className="font-serif text-lg text-white">Public check</p>
-            <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.14em] text-ink-muted">Stand-in for wallet information</p>
+            <p className="font-serif text-lg text-white">Target result</p>
+            <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.14em] text-ink-muted">The result we need to match</p>
           </div>
           <CluePattern pattern={targetPattern} />
         </div>
         <div className="grid grid-cols-[1fr_auto] items-center gap-5 py-5">
           <div>
             <p className={`font-serif text-lg ${found ? 'text-accent' : 'text-white'}`}>
-              {found ? 'Match' : searching ? 'Checking' : 'Waiting'}
+              {found ? 'Matched' : searching ? 'Checking' : 'Waiting'}
             </p>
-            <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.14em] text-ink-muted">Check produced by this guess</p>
+            <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.14em] text-ink-muted">Result from the current guess</p>
           </div>
           <CluePattern pattern={candidatePattern} matched={found} />
         </div>
         <p className="border-t border-white/10 py-3 font-sans text-xs leading-relaxed text-ink-muted">
-          The tiles show 24 bits for readability. The demo compares the complete 256-bit SHA-256 value.
+          Only 24 bits are drawn here. The demo checks all 256 bits of the SHA-256 result.
         </p>
       </div>
 
