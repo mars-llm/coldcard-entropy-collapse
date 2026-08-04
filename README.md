@@ -4,7 +4,7 @@ A visual case study of a COLDCARD seed-generation failure. A firmware integratio
 
 The demonstration uses SHA-256 and a 64-candidate toy space. It does not generate wallet material, derive Bitcoin addresses, or reproduce the affected firmware. The page keeps practical guidance separate from the walkthrough and directs affected owners to [Coinkite's current migration advisory](https://blog.coinkite.com/coldcard-mk3-seed-generation-warning/), which links the correct download for each model and release track.
 
-Coinkite's advisory lists Mk2/Mk3 4.0.1–4.1.9. Public 4.0.0 source and two signed build records show the same affected route, so this project conservatively includes 4.0.0. Fixed releases begin with Mk2/Mk3 4.2.0, Mk4/Mk5 standard 5.6.0, Q standard 1.5.0Q, Mk4/Mk5 Edge 6.6.0X, and Q Edge 6.6.0QX. Updating corrects future seed generation; it does not repair an existing seed.
+Coinkite's advisory lists Mk2/Mk3 4.0.1–4.1.9. Public source and signed release records also show the affected route in 4.0.0 and in two old Mk3 builds named 5.0.1-mk3 and 5.0.3-mk3. For Mk3, the fixed release is 4.2.0. Fixed releases for later models begin with Mk4/Mk5 standard 5.6.0, Q standard 1.5.0Q, Mk4/Mk5 Edge 6.6.0X, and Q Edge 6.6.0QX. Updating corrects future seed generation; it does not repair an existing seed.
 
 Coinkite does not consider a seed at risk from this fault alone if at least 50 fair, independent, private dice rolls were added during seed creation. A strong, unique BIP-39 passphrase adds a separate barrier, but does not repair the seed. Coinkite still advises replacing the affected seed as soon as practical.
 
@@ -48,6 +48,9 @@ Pushing `main` runs the Node 24 deployment workflow. The published site is avail
 - [COLDCARD Mk2/Mk3 4.0.0 seed-generation source](https://github.com/Coldcard/firmware/blob/75addaefcb5b1861e1c8986195a448ac3f94a303/shared/seed.py#L348-L359)
 - [Signed Mk2/Mk3 4.0.0 build record at 17:20](https://github.com/Coldcard/firmware/blob/38f4e177c928fffc7c1378aac67f7dead8befe80/releases/signatures.txt#L5)
 - [Signed Mk2/Mk3 4.0.0 build record at 17:24](https://github.com/Coldcard/firmware/blob/75addaefcb5b1861e1c8986195a448ac3f94a303/releases/signatures.txt#L5)
+- [Signed Mk3 5.0.1 and 5.0.3 build records](https://github.com/Coldcard/firmware/blob/d2acc4380b5ffcb10cf6ad1bc828a04794fd0c24/releases/signatures.txt#L8-L15)
+- [Mk3 5.0.1 seed-generation source](https://github.com/Coldcard/firmware/blob/e909bc0326feb63ce17891a8d14b0966996e4f5d/shared/seed.py#L370)
+- [Mk3 5.0.3 seed-generation source](https://github.com/Coldcard/firmware/blob/fd83de540a0edd6f9bc6efb2626f6b1b858f551d/shared/seed.py#L370)
 - [Main firmware hardware-RNG hotfix](https://github.com/Coldcard/firmware/commit/ca72463709f4e3f8964952039d5caf955f566a87)
 - [Mk2/Mk3 legacy hardware-RNG hotfix](https://github.com/Coldcard/firmware/commit/4543629941a83a3e2788ac06a12b208338cb8314)
 - COLDCARD hotfix downloads: [Mk3 4.2.0](https://coldcard.com/downloads/mk3), [Mk4/Mk5 5.6.0](https://coldcard.com/downloads/mk), [Q 1.5.0Q](https://coldcard.com/downloads/q1), and [Edge 6.6.0X or 6.6.0QX](https://coldcard.com/downloads/edge)

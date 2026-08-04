@@ -196,7 +196,7 @@ export function EntropyStudy() {
               transition={{ duration: shouldReduceMotion ? 0 : 0.35 }}
             >
               <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-accent">
-                Cold storage security case study / Updated 3 August 2026
+                Cold storage security case study / Updated 4 August 2026
               </p>
               <h1 className="mt-4 font-serif text-3xl leading-tight text-white sm:text-4xl lg:text-5xl">
                 How a firmware mistake weakened COLDCARD seed generation.
@@ -285,7 +285,7 @@ export function EntropyStudy() {
               </div>
               <div className="grid grid-cols-[7rem_1fr_1fr] gap-3 border-b border-accent/20 py-4 font-sans text-sm sm:grid-cols-[10rem_1fr_1fr]">
                 <strong className="font-normal text-white">Mk2 / Mk3</strong>
-                <span className="text-ink-muted">4.0.0–4.1.9*</span>
+                <span className="text-ink-muted">4.0.0–4.1.9; 5.0.1-mk3; 5.0.3-mk3*</span>
                 <span className="text-white">4.2.0+</span>
               </div>
               <div className="grid grid-cols-[7rem_1fr_1fr] gap-3 border-b border-accent/20 py-4 font-sans text-sm sm:grid-cols-[10rem_1fr_1fr]">
@@ -300,7 +300,7 @@ export function EntropyStudy() {
               </div>
             </div>
             <p className="mt-3 max-w-4xl font-sans text-xs leading-relaxed text-ink-muted">
-              * Coinkite&apos;s advisory starts the Mk2/Mk3 range at 4.0.1. Public 4.0.0 source and signed release records show the same faulty route, so this page conservatively includes 4.0.0.
+              * Coinkite lists 4.0.1–4.1.9. Public source and signed records also show the affected route in 4.0.0 and in two old Mk3 builds named 5.0.1-mk3 and 5.0.3-mk3. For Mk3, the fixed release is 4.2.0.
             </p>
 
             <ol className="mt-8 grid border-y border-accent/35 lg:grid-cols-3">
@@ -574,7 +574,7 @@ export function EntropyStudy() {
                     MicroPython initialized the fallback from one 32-bit word of the chip ID, the current phase of a repeating processor counter, and two raw clock-register values. Earlier calls then advanced the generator before seed creation. The processor counter was not a timestamp, and no published hardware study has measured how these values are distributed across many devices and boots.
                   </p>
                   <p>
-                    Coinkite&apos;s advisory starts the Mk2/Mk3 range at 4.0.1. Its official version history lists 4.0.0 as a release, and the public source plus signed build records use the affected route. This page therefore includes 4.0.0 while keeping the difference from Coinkite&apos;s published range explicit.
+                    Coinkite lists Mk2/Mk3 4.0.1–4.1.9. Public source and signed release records also show the affected route in 4.0.0 and in Mk3 builds 5.0.1-mk3 and 5.0.3-mk3. This page keeps that difference explicit.
                   </p>
                 </div>
               </section>
@@ -631,12 +631,15 @@ export function EntropyStudy() {
               </section>
 
               <section>
-                <h3 className="font-serif text-lg text-white">Affected 4.0.0 release</h3>
+                <h3 className="font-serif text-lg text-white">Affected releases outside the advisory range</h3>
                 <div className="mt-3 border-t border-white/10">
                   <SourceLink label="Official 4.0.0 version history" href="https://coldcard.com/docs/version-history/#version-400-mar-17-2021" />
                   <SourceLink label="4.0.0 seed-generation source" href="https://github.com/Coldcard/firmware/blob/75addaefcb5b1861e1c8986195a448ac3f94a303/shared/seed.py#L348-L359" />
                   <SourceLink label="Signed 4.0.0 build / 17:20" href="https://github.com/Coldcard/firmware/blob/38f4e177c928fffc7c1378aac67f7dead8befe80/releases/signatures.txt#L5" />
                   <SourceLink label="Signed 4.0.0 build / 17:24" href="https://github.com/Coldcard/firmware/blob/75addaefcb5b1861e1c8986195a448ac3f94a303/releases/signatures.txt#L5" />
+                  <SourceLink label="Signed Mk3 5.0.1 and 5.0.3 builds" href="https://github.com/Coldcard/firmware/blob/d2acc4380b5ffcb10cf6ad1bc828a04794fd0c24/releases/signatures.txt#L8-L15" />
+                  <SourceLink label="Mk3 5.0.1 seed-generation source" href="https://github.com/Coldcard/firmware/blob/e909bc0326feb63ce17891a8d14b0966996e4f5d/shared/seed.py#L370" />
+                  <SourceLink label="Mk3 5.0.3 seed-generation source" href="https://github.com/Coldcard/firmware/blob/fd83de540a0edd6f9bc6efb2626f6b1b858f551d/shared/seed.py#L370" />
                 </div>
               </section>
 
