@@ -682,7 +682,17 @@ export function EntropyStudy() {
 
       <footer className="flex flex-col gap-2 px-4 py-4 font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted sm:flex-row sm:items-center sm:justify-between md:px-8">
         <span>Unaffiliated with Coinkite or COLDCARD.</span>
-        <span>Developed by Marsmensch, 2026.</span>
+        <span className="flex flex-wrap items-center gap-x-2">
+          <span>Developed by</span>
+          <a href="https://github.com/marsmensch" target="_blank" rel="noreferrer" className="text-white underline decoration-white/30 underline-offset-4 transition-colors hover:text-accent">
+            Marsmensch
+          </a>
+          <span>/</span>
+          <a href="https://github.com/mars-llm" target="_blank" rel="noreferrer" className="text-white underline decoration-white/30 underline-offset-4 transition-colors hover:text-accent">
+            mars-llm
+          </a>
+          <span>/ 2026</span>
+        </span>
       </footer>
     </div>
   );
