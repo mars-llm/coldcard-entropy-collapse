@@ -196,7 +196,7 @@ export function EntropyStudy() {
               transition={{ duration: shouldReduceMotion ? 0 : 0.35 }}
             >
               <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-accent">
-                Cold storage security case study / Updated 4 August 2026
+                Cold storage security case study / Updated 13 August 2026
               </p>
               <h1 className="mt-4 font-serif text-3xl leading-tight text-white sm:text-4xl lg:text-5xl">
                 How a firmware mistake weakened COLDCARD seed generation.
@@ -312,7 +312,7 @@ export function EntropyStudy() {
               <li className="border-b border-accent/25 py-5 lg:border-b-0 lg:border-r lg:px-6">
                 <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-accent">02 / Replace</p>
                 <h3 className="mt-2 font-serif text-lg text-white">Create and check a new seed.</h3>
-                <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">Verify the written backup and a receive address on the device.</p>
+                <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">On fixed firmware, the normal New Wallet flow is enough; dice are optional. Verify the written backup and a receive address.</p>
               </li>
               <li className="py-5 lg:pl-6">
                 <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-accent">03 / Move</p>
@@ -329,7 +329,7 @@ export function EntropyStudy() {
               <div className="grid gap-0 border-t border-accent/25 pb-2 lg:grid-cols-3">
                 <div className="border-b border-accent/20 py-5 lg:border-b-0 lg:border-r lg:pr-5">
                   <h3 className="font-serif text-base text-white">Dice added during seed creation</h3>
-                  <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">Coinkite says this bug alone does not put a seed at risk if at least 50 fair, independent, private dice rolls were used when it was created. Rolls added now cannot change an existing seed.</p>
+                  <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">Coinkite&apos;s exception requires at least 50 fair, independent, private rolls during seed creation. A held digit could be counted more than once, so rely on the physical rolls—not the displayed count. Later rolls cannot repair a seed; if unsure, migrate.</p>
                 </div>
                 <div className="border-b border-accent/20 py-5 lg:border-b-0 lg:border-r lg:px-5">
                   <h3 className="font-serif text-base text-white">Strong BIP-39 passphrase</h3>
@@ -577,7 +577,7 @@ export function EntropyStudy() {
                     Coinkite lists Mk2/Mk3 4.0.1–4.1.9. Public source and signed release records also show the affected route in 4.0.0 and in Mk3 builds 5.0.1-mk3 and 5.0.3-mk3. That is why the table above includes all three.
                   </p>
                   <p>
-                    Two proposed patches would use the full 32-byte secure-element digest on later models and check the hardware-RNG path at startup. As of 4 August, neither patch has been released.
+                    After the July hotfix, Coinkite merged more safeguards into its source: better handling of hardware RNG faults and a boot check that proves the hardware path is used. They are not in a firmware download yet. A full-digest reseed and a deeper build check are still proposals.
                   </p>
                 </div>
               </section>
@@ -617,6 +617,7 @@ export function EntropyStudy() {
                   <SourceLink label="Mk4/Mk5 fixed firmware" href="https://coldcard.com/downloads/mk" />
                   <SourceLink label="Q fixed firmware" href="https://coldcard.com/downloads/q1" />
                   <SourceLink label="Edge fixed firmware" href="https://coldcard.com/downloads/edge" />
+                  <SourceLink label="Held-key dice report and proposed fix" href="https://github.com/Coldcard/firmware/pull/721" />
                 </div>
               </section>
 
@@ -630,8 +631,11 @@ export function EntropyStudy() {
                   <SourceLink label="MicroPython fallback source" href="https://github.com/Coldcard/micropython/blob/4107246f8a080807b62c3b4838e71e812ea68b6f/ports/stm32/rng.c#L74-L98" />
                   <SourceLink label="Main firmware hotfix" href="https://github.com/Coldcard/firmware/commit/ca72463709f4e3f8964952039d5caf955f566a87" />
                   <SourceLink label="Mk2/Mk3 legacy hotfix" href="https://github.com/Coldcard/firmware/commit/4543629941a83a3e2788ac06a12b208338cb8314" />
-                  <SourceLink label="Open full-digest reseed proposal" href="https://github.com/Coldcard/firmware/pull/697" />
-                  <SourceLink label="Open RNG startup-check proposal" href="https://github.com/Coldcard/firmware/pull/694" />
+                  <SourceLink label="Merged later-model RNG fault handling — source only" href="https://github.com/Coldcard/firmware/pull/693" />
+                  <SourceLink label="Merged Mk3 RNG fault handling — source only" href="https://github.com/Coldcard/firmware/pull/695" />
+                  <SourceLink label="Merged RNG startup check — source only" href="https://github.com/Coldcard/firmware/pull/694" />
+                  <SourceLink label="Open full-digest reseed draft" href="https://github.com/Coldcard/firmware/pull/691" />
+                  <SourceLink label="Open RNG path build check" href="https://github.com/Coldcard/firmware/pull/700" />
                 </div>
               </section>
 
@@ -744,7 +748,7 @@ function LimitedBeginnings({ targetPattern }: { targetPattern: string[] }) {
           <CluePattern pattern={targetPattern} />
         </div>
         <p className="mt-5 max-w-sm font-sans text-xs leading-relaxed text-ink-muted">
-          Exactly one of the 64 values produces this result. To find it, the list has to be checked.
+          One of the 64 values produces this result. To find it, the list has to be checked.
         </p>
       </div>
     </div>
