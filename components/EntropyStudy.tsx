@@ -196,7 +196,7 @@ export function EntropyStudy() {
               transition={{ duration: shouldReduceMotion ? 0 : 0.35 }}
             >
               <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-accent">
-                Cold storage security case study / Updated 13 August 2026
+                Cold storage security case study / Updated 17 August 2026
               </p>
               <h1 className="mt-4 font-serif text-3xl leading-tight text-white sm:text-4xl lg:text-5xl">
                 How a firmware mistake weakened COLDCARD seed generation.
@@ -221,9 +221,9 @@ export function EntropyStudy() {
                 </a>
               </div>
               <p className="mt-5 max-w-2xl font-sans text-xs leading-relaxed text-ink-muted">
-                Unaffiliated with Coinkite or COLDCARD. This page explains the failure; affected owners should follow the{' '}
-                <a href="https://blog.coinkite.com/coldcard-mk3-seed-generation-warning/" target="_blank" rel="noreferrer" className="text-white underline decoration-accent underline-offset-4 hover:text-accent">
-                  official advisory
+                Unaffiliated with Coinkite or COLDCARD. This page explains the failure; affected owners should follow Coinkite&apos;s{' '}
+                <a href="https://coldcard.com/security/migrate" target="_blank" rel="noreferrer" className="text-white underline decoration-accent underline-offset-4 hover:text-accent">
+                  migration guide
                 </a>.
               </p>
             </motion.header>
@@ -267,7 +267,7 @@ export function EntropyStudy() {
                 </p>
               </div>
               <a
-                href="https://blog.coinkite.com/coldcard-mk3-seed-generation-warning/"
+                href="https://coldcard.com/security/migrate"
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex min-h-12 items-center justify-center gap-3 bg-white px-5 font-mono text-[10px] uppercase tracking-[0.15em] text-black transition-colors hover:bg-ink"
@@ -312,7 +312,7 @@ export function EntropyStudy() {
               <li className="border-b border-accent/25 py-5 lg:border-b-0 lg:border-r lg:px-6">
                 <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-accent">02 / Replace</p>
                 <h3 className="mt-2 font-serif text-lg text-white">Create and check a new seed.</h3>
-                <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">On fixed firmware, the normal New Wallet flow is enough; dice are optional. Verify the written backup and a receive address.</p>
+                <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">Use New Wallet on fixed firmware. Verify the backup, wallet fingerprint, and a receive address. Do not clone or restore the old seed.</p>
               </li>
               <li className="py-5 lg:pl-6">
                 <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-accent">03 / Move</p>
@@ -329,11 +329,11 @@ export function EntropyStudy() {
               <div className="grid gap-0 border-t border-accent/25 pb-2 lg:grid-cols-3">
                 <div className="border-b border-accent/20 py-5 lg:border-b-0 lg:border-r lg:pr-5">
                   <h3 className="font-serif text-base text-white">Dice added during seed creation</h3>
-                  <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">Coinkite&apos;s exception requires at least 50 fair, independent, private rolls during seed creation. A held digit could be counted more than once, so rely on the physical rolls—not the displayed count. Later rolls cannot repair a seed; if unsure, migrate.</p>
+                  <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">Coinkite&apos;s exception requires at least 50 fair, independent, private rolls during seed creation. A held digit could be counted more than once, so rely on the physical rolls—not the displayed count. For a new wallet, Coinkite now recommends adding private dice to the device&apos;s randomness.</p>
                 </div>
                 <div className="border-b border-accent/20 py-5 lg:border-b-0 lg:border-r lg:px-5">
                   <h3 className="font-serif text-base text-white">Strong BIP-39 passphrase</h3>
-                  <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">This is an extra secret, not the PIN. A strong, unique passphrase adds a barrier but does not repair the seed. Coinkite still advises replacing it.</p>
+                  <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">This is an extra secret, not the PIN. It does not repair an affected seed, and Coinkite still advises replacing that seed. For a new wallet holding a meaningful balance, Coinkite now recommends a strong, unique passphrase after recovery has been tested.</p>
                 </div>
                 <div className="py-5 lg:pl-5">
                   <h3 className="font-serif text-base text-white">Multisig or another spending policy</h3>
@@ -347,12 +347,12 @@ export function EntropyStudy() {
             </p>
 
             <a
-              href="https://blog.coinkite.com/coldcard-mk3-seed-generation-warning/"
+              href="https://coldcard.com/security/migrate"
               target="_blank"
               rel="noreferrer"
               className="mt-6 inline-flex min-h-11 items-center gap-3 font-mono text-[10px] uppercase tracking-[0.15em] text-white underline decoration-accent underline-offset-4 transition-colors hover:text-accent"
             >
-              Get the correct download from the official advisory
+              Open Coinkite&apos;s migration guide
               <ExternalLink size={13} aria-hidden="true" />
             </a>
           </div>
@@ -577,7 +577,10 @@ export function EntropyStudy() {
                     Coinkite lists Mk2/Mk3 4.0.1–4.1.9. Public source and signed release records also show the affected route in 4.0.0 and in Mk3 builds 5.0.1-mk3 and 5.0.3-mk3. That is why the table above includes all three.
                   </p>
                   <p>
-                    After the July hotfix, Coinkite merged more safeguards into its source: better handling of hardware RNG faults and a boot check that proves the hardware path is used. They are not in a firmware download yet. A full-digest reseed and a deeper build check are still proposals.
+                    Coinkite now links several targeted checks of the July hotfix: a real Mk4 test reached the hardware RNG, source reviews covered the fixed release lines, and one 5.6.0 rebuild matched the signed firmware. These checks are useful, but they are not a complete audit.
+                  </p>
+                  <p>
+                    More safeguards have since been merged into source, including hardware-RNG fault handling, boot and build checks, a fix for held-key dice counts, and a broader seed-generation redesign. None is in a newer firmware download yet; the current downloads are still the 31 July hotfixes.
                   </p>
                 </div>
               </section>
@@ -612,12 +615,14 @@ export function EntropyStudy() {
               <section>
                 <h3 className="font-serif text-lg text-white">Owner guidance and fixed firmware</h3>
                 <div className="mt-3 border-t border-white/10">
-                  <SourceLink label="Coinkite migration advisory" href="https://blog.coinkite.com/coldcard-mk3-seed-generation-warning/" />
+                  <SourceLink label="Coinkite current security status" href="https://coldcard.com/security/status" />
+                  <SourceLink label="Coinkite migration guide" href="https://coldcard.com/security/migrate" />
+                  <SourceLink label="Original Coinkite advisory" href="https://blog.coinkite.com/coldcard-mk3-seed-generation-warning/" />
                   <SourceLink label="Mk2/Mk3 fixed firmware" href="https://coldcard.com/downloads/mk3" />
                   <SourceLink label="Mk4/Mk5 fixed firmware" href="https://coldcard.com/downloads/mk" />
                   <SourceLink label="Q fixed firmware" href="https://coldcard.com/downloads/q1" />
                   <SourceLink label="Edge fixed firmware" href="https://coldcard.com/downloads/edge" />
-                  <SourceLink label="Held-key dice report and proposed fix" href="https://github.com/Coldcard/firmware/pull/721" />
+                  <SourceLink label="Merged held-key dice fix — source only" href="https://github.com/Coldcard/firmware/pull/721" />
                 </div>
               </section>
 
@@ -634,8 +639,8 @@ export function EntropyStudy() {
                   <SourceLink label="Merged later-model RNG fault handling — source only" href="https://github.com/Coldcard/firmware/pull/693" />
                   <SourceLink label="Merged Mk3 RNG fault handling — source only" href="https://github.com/Coldcard/firmware/pull/695" />
                   <SourceLink label="Merged RNG startup check — source only" href="https://github.com/Coldcard/firmware/pull/694" />
-                  <SourceLink label="Open full-digest reseed draft" href="https://github.com/Coldcard/firmware/pull/691" />
-                  <SourceLink label="Open RNG path build check" href="https://github.com/Coldcard/firmware/pull/700" />
+                  <SourceLink label="Merged RNG path build check — source only" href="https://github.com/Coldcard/firmware/pull/700" />
+                  <SourceLink label="Merged seed-generation redesign — source only" href="https://github.com/Coldcard/firmware/pull/727" />
                 </div>
               </section>
 
