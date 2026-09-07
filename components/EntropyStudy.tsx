@@ -48,8 +48,8 @@ const TIMELINE = [
   },
   {
     date: '11 March 2022',
-    title: 'Later models added data from two secure elements',
-    body: 'Mk4 hashed data from both secure elements, then passed only four bytes of the result into the software generator.',
+    title: 'Later models added another source, but kept too little of it',
+    body: 'Mk4, Mk5, and Q also used data from two secure elements. The affected path kept only four bytes of the result.',
     sourceHref: 'https://github.com/Coldcard/firmware/commit/01cb43f7e87cc806963a74cbe0fcb4155f23a2a3',
     sourceLabel: 'Reseed change',
   },
@@ -61,11 +61,11 @@ const TIMELINE = [
     sourceLabel: 'Independent firmware analysis',
   },
   {
-    date: '31 July 2026',
-    title: 'Coinkite released fixed firmware',
-    body: 'The updates repair new seed generation. Seeds made earlier on affected firmware still need to be replaced.',
-    sourceHref: 'https://blog.coinkite.com/coldcard-mk3-seed-generation-warning/',
-    sourceLabel: 'Official advisory',
+    date: '31 July–3 September 2026',
+    title: 'Coinkite fixed the route, then added more checks',
+    body: 'The first hotfix repaired seed creation. Later releases added more entropy sources, required human input, and extra checks. None of these changes repairs an old seed.',
+    sourceHref: 'https://blog.coinkite.com/coldcard-firmware-update-5.6.2-1.5.2q/',
+    sourceLabel: 'Current firmware announcement',
   },
 ] as const;
 
@@ -196,7 +196,7 @@ export function EntropyStudy() {
               transition={{ duration: shouldReduceMotion ? 0 : 0.35 }}
             >
               <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-accent">
-                Cold storage security case study / Updated 17 August 2026
+                Cold storage security case study / Updated 7 September 2026
               </p>
               <h1 className="mt-4 font-serif text-3xl leading-tight text-white sm:text-4xl lg:text-5xl">
                 How a firmware mistake weakened COLDCARD seed generation.
@@ -260,10 +260,7 @@ export function EntropyStudy() {
                 <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">For COLDCARD owners / Start here</p>
                 <h2 className="mt-3 font-serif text-3xl leading-tight text-white">Could this affect my wallet?</h2>
                 <p className="mt-3 max-w-2xl font-sans text-sm leading-relaxed text-ink-muted">
-                  What matters is where the seed was created. A seed made by affected firmware remains affected after being restored on another device. A seed created elsewhere and later imported did not pass through this bug.
-                </p>
-                <p className="mt-3 max-w-2xl font-sans text-sm leading-relaxed text-ink-muted">
-                  Fixed firmware protects future seeds. It cannot repair one that already exists. If you do not know where the seed came from, use the official guidance or ask your wallet provider before acting.
+                  Check the firmware that created the seed—not only what is installed now. Updating or changing devices does not repair an affected seed. A seed created elsewhere and later imported did not pass through this bug.
                 </p>
               </div>
               <a
@@ -281,38 +278,38 @@ export function EntropyStudy() {
               <div className="grid grid-cols-[7rem_1fr_1fr] gap-3 border-b border-accent/25 py-3 font-mono text-[10px] uppercase tracking-[0.14em] text-accent sm:grid-cols-[10rem_1fr_1fr]">
                 <span>Model</span>
                 <span>Seed made on</span>
-                <span>Fixed in</span>
+                <span>Use now</span>
               </div>
               <div className="grid grid-cols-[7rem_1fr_1fr] gap-3 border-b border-accent/20 py-4 font-sans text-sm sm:grid-cols-[10rem_1fr_1fr]">
                 <strong className="font-normal text-white">Mk2 / Mk3</strong>
                 <span className="text-ink-muted">4.0.0–4.1.9; 5.0.1-mk3; 5.0.3-mk3*</span>
-                <span className="text-white">4.2.0+</span>
+                <span className="text-white">4.2.0 (final release)</span>
               </div>
               <div className="grid grid-cols-[7rem_1fr_1fr] gap-3 border-b border-accent/20 py-4 font-sans text-sm sm:grid-cols-[10rem_1fr_1fr]">
                 <strong className="font-normal text-white">Mk4 / Mk5</strong>
                 <span className="text-ink-muted">Before 5.6.0 standard or 6.6.0X Edge</span>
-                <span className="text-white">5.6.0+ standard or 6.6.0X+ Edge</span>
+                <span className="text-white">5.6.2 standard or 6.6.1X Edge</span>
               </div>
               <div className="grid grid-cols-[7rem_1fr_1fr] gap-3 py-4 font-sans text-sm sm:grid-cols-[10rem_1fr_1fr]">
                 <strong className="font-normal text-white">Q</strong>
                 <span className="text-ink-muted">Before 1.5.0Q standard or 6.6.0QX Edge</span>
-                <span className="text-white">1.5.0Q+ standard or 6.6.0QX+ Edge</span>
+                <span className="text-white">1.5.2Q standard or 6.6.1QX Edge</span>
               </div>
             </div>
             <p className="mt-3 max-w-4xl font-sans text-xs leading-relaxed text-ink-muted">
-              * Coinkite lists 4.0.1–4.1.9. Public source and signed records also show the affected route in 4.0.0 and in two old Mk3 builds named 5.0.1-mk3 and 5.0.3-mk3. For Mk3, the fixed release is 4.2.0.
+              * Coinkite&apos;s advisory names 4.0.1–4.1.9. Public source and signed builds also show the affected route in 4.0.0, 5.0.1-mk3, and 5.0.3-mk3. The evidence is linked below.
             </p>
 
             <ol className="mt-8 grid border-y border-accent/35 lg:grid-cols-3">
               <li className="border-b border-accent/25 py-5 lg:border-b-0 lg:border-r lg:pr-6">
                 <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-accent">01 / Update</p>
-                <h3 className="mt-2 font-serif text-lg text-white">Install fixed firmware.</h3>
+                <h3 className="mt-2 font-serif text-lg text-white">Install current firmware.</h3>
                 <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">Confirm the version on the device before creating a replacement seed.</p>
               </li>
               <li className="border-b border-accent/25 py-5 lg:border-b-0 lg:border-r lg:px-6">
                 <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-accent">02 / Replace</p>
                 <h3 className="mt-2 font-serif text-lg text-white">Create and check a new seed.</h3>
-                <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">Use New Wallet on fixed firmware. Verify the backup, wallet fingerprint, and a receive address. Do not clone or restore the old seed.</p>
+                <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">Use New Wallet. Verify the backup, fingerprint, and a receive address. Do not restore the old seed.</p>
               </li>
               <li className="py-5 lg:pl-6">
                 <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-accent">03 / Move</p>
@@ -329,15 +326,15 @@ export function EntropyStudy() {
               <div className="grid gap-0 border-t border-accent/25 pb-2 lg:grid-cols-3">
                 <div className="border-b border-accent/20 py-5 lg:border-b-0 lg:border-r lg:pr-5">
                   <h3 className="font-serif text-base text-white">Dice added during seed creation</h3>
-                  <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">Coinkite&apos;s exception requires at least 50 fair, independent, private rolls during seed creation. A held digit could be counted more than once, so rely on the physical rolls—not the displayed count. For a new wallet, Coinkite now recommends adding private dice to the device&apos;s randomness.</p>
+                  <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">Coinkite says this fault alone does not put a seed at risk if at least 50 fair, private dice rolls were added when it was created. Count the physical rolls, not only the number once shown on screen.</p>
                 </div>
                 <div className="border-b border-accent/20 py-5 lg:border-b-0 lg:border-r lg:px-5">
                   <h3 className="font-serif text-base text-white">Strong BIP-39 passphrase</h3>
-                  <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">This is an extra secret, not the PIN. It does not repair an affected seed, and Coinkite still advises replacing that seed. For a new wallet holding a meaningful balance, Coinkite now recommends a strong, unique passphrase after recovery has been tested.</p>
+                  <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">This is an extra secret, not the PIN. It may slow an attacker, but it does not repair the seed. Coinkite still advises replacing an affected seed.</p>
                 </div>
                 <div className="py-5 lg:pl-5">
                   <h3 className="font-serif text-base text-white">Multisig or another spending policy</h3>
-                  <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">What matters is whether affected keys can approve a payment on their own. If a healthy, independent key is still required, the affected keys alone are not enough. Ask your wallet provider before moving funds.</p>
+                  <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">If affected keys can reach the spending threshold by themselves, the wallet is at risk. If an independent healthy key is required, they cannot spend alone. Ask your wallet provider if you are unsure.</p>
                 </div>
               </div>
             </details>
@@ -346,15 +343,6 @@ export function EntropyStudy() {
               Never enter seed words or a passphrase on any website. Ignore unsolicited recovery help. Keep the old backup until the move is complete.
             </p>
 
-            <a
-              href="https://coldcard.com/security/migrate"
-              target="_blank"
-              rel="noreferrer"
-              className="mt-6 inline-flex min-h-11 items-center gap-3 font-mono text-[10px] uppercase tracking-[0.15em] text-white underline decoration-accent underline-offset-4 transition-colors hover:text-accent"
-            >
-              Open Coinkite&apos;s migration guide
-              <ExternalLink size={13} aria-hidden="true" />
-            </a>
           </div>
         </section>
 
@@ -559,10 +547,7 @@ export function EntropyStudy() {
                 <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">Incident record</p>
                 <div className="mt-4 space-y-4 font-sans text-sm leading-relaxed text-ink-muted">
                   <p>
-                    Galaxy Research grouped three suspected sweep waves: 1,367.05 BTC from 4,585 addresses. Its revised count for the first wave is 1,082.65 BTC from 1,195 addresses, moved in 41 minutes on 30 July UTC.
-                  </p>
-                  <p>
-                    Alex Thorn later reported a separate, provisional cluster of 448.73 BTC across 709 addresses after removing 89 misclassified multisig addresses. It had no direct confirmation from affected owners, so it is not added to Galaxy&apos;s total. Blockchain patterns can group suspected sweeps; they cannot identify the original device or firmware.
+                    On 14 August, Galaxy Research said reports from 190 victims had helped it attribute 1,778.84 BTC from more than 8,600 addresses with high confidence. It found no confirmed attacker activity after 6 August. The count may still change as more victims report losses.
                   </p>
                 </div>
               </section>
@@ -571,16 +556,13 @@ export function EntropyStudy() {
                 <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">What the code shows</p>
                 <div className="mt-4 space-y-4 font-sans text-sm leading-relaxed text-ink-muted">
                   <p>
-                    MicroPython initialized the fallback from one 32-bit word of the chip ID, the current phase of a repeating processor counter, and two raw clock-register values. Earlier calls then advanced the generator before seed creation. The processor counter was not a timestamp, and no published hardware study has measured how these values are distributed across many devices and boots.
+                    MicroPython&apos;s fallback began from limited device and timing data. Earlier calls also changed its later output. That made the route deterministic, but the public source does not show that every device chose from one shared 32-bit pool of complete seeds.
                   </p>
                   <p>
                     Coinkite lists Mk2/Mk3 4.0.1–4.1.9. Public source and signed release records also show the affected route in 4.0.0 and in Mk3 builds 5.0.1-mk3 and 5.0.3-mk3. That is why the table above includes all three.
                   </p>
                   <p>
-                    Coinkite now links several targeted checks of the July hotfix: a real Mk4 test reached the hardware RNG, source reviews covered the fixed release lines, and one 5.6.0 rebuild matched the signed firmware. These checks are useful, but they are not a complete audit.
-                  </p>
-                  <p>
-                    More safeguards have since been merged into source, including hardware-RNG fault handling, boot and build checks, a fix for held-key dice counts, and a broader seed-generation redesign. None is in a newer firmware download yet; the current downloads are still the 31 July hotfixes.
+                    In August, Mk4/Mk5 5.6.1 and Q 1.5.1Q shipped a redesigned seed path. It combines fresh output from the processor and both secure elements with required key timing, dice, or coin flips. It also adds boot and build checks. The current standard releases are 5.6.2 and 1.5.2Q; Mk3 4.2.0 remains final.
                   </p>
                 </div>
               </section>
@@ -589,19 +571,7 @@ export function EntropyStudy() {
                 <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">What has not been measured</p>
                 <div className="mt-4 space-y-4 font-sans text-sm leading-relaxed text-ink-muted">
                   <p>
-                    Testing a guess requires BIP-39 and wallet-address derivation. Published GPU and FPGA studies cover parts of that work, not a complete COLDCARD search. No public end-to-end benchmark establishes the time or cost for later models.
-                  </p>
-                  <p>
-                    Coinkite&apos;s preliminary estimates are about 40 bits for affected Mk2/Mk3 seeds and about 72 bits for Mk4/Mk5/Q. Block separately counted 2³² possible values for one later-model input while holding the remaining state fixed. These are not measured attack times.
-                  </p>
-                </div>
-              </section>
-
-              <section>
-                <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">What a recovered seed exposes</p>
-                <div className="mt-4 space-y-4 font-sans text-sm leading-relaxed text-ink-muted">
-                  <p>
-                    A recovered seed lets an attacker derive and scan common wallet paths. That can link the affected wallet&apos;s activity and reduce the privacy of CoinJoin or Payjoin transactions it joined, but it does not automatically expose every custom path or every other participant.
+                    Coinkite estimates about 40 bits for affected Mk2/Mk3 seeds and about 72 bits for Mk4/Mk5/Q. Block counted 2³² possibilities for one later-model input only after fixing the rest of the state. No public end-to-end benchmark turns those estimates into a reliable attack time for later models.
                   </p>
                 </div>
               </section>
@@ -617,12 +587,9 @@ export function EntropyStudy() {
                 <div className="mt-3 border-t border-white/10">
                   <SourceLink label="Coinkite current security status" href="https://coldcard.com/security/status" />
                   <SourceLink label="Coinkite migration guide" href="https://coldcard.com/security/migrate" />
+                  <SourceLink label="Current firmware downloads" href="https://coldcard.com/downloads/all" />
+                  <SourceLink label="5.6.2 and 1.5.2Q announcement" href="https://blog.coinkite.com/coldcard-firmware-update-5.6.2-1.5.2q/" />
                   <SourceLink label="Original Coinkite advisory" href="https://blog.coinkite.com/coldcard-mk3-seed-generation-warning/" />
-                  <SourceLink label="Mk2/Mk3 fixed firmware" href="https://coldcard.com/downloads/mk3" />
-                  <SourceLink label="Mk4/Mk5 fixed firmware" href="https://coldcard.com/downloads/mk" />
-                  <SourceLink label="Q fixed firmware" href="https://coldcard.com/downloads/q1" />
-                  <SourceLink label="Edge fixed firmware" href="https://coldcard.com/downloads/edge" />
-                  <SourceLink label="Merged held-key dice fix — source only" href="https://github.com/Coldcard/firmware/pull/721" />
                 </div>
               </section>
 
@@ -636,11 +603,7 @@ export function EntropyStudy() {
                   <SourceLink label="MicroPython fallback source" href="https://github.com/Coldcard/micropython/blob/4107246f8a080807b62c3b4838e71e812ea68b6f/ports/stm32/rng.c#L74-L98" />
                   <SourceLink label="Main firmware hotfix" href="https://github.com/Coldcard/firmware/commit/ca72463709f4e3f8964952039d5caf955f566a87" />
                   <SourceLink label="Mk2/Mk3 legacy hotfix" href="https://github.com/Coldcard/firmware/commit/4543629941a83a3e2788ac06a12b208338cb8314" />
-                  <SourceLink label="Merged later-model RNG fault handling — source only" href="https://github.com/Coldcard/firmware/pull/693" />
-                  <SourceLink label="Merged Mk3 RNG fault handling — source only" href="https://github.com/Coldcard/firmware/pull/695" />
-                  <SourceLink label="Merged RNG startup check — source only" href="https://github.com/Coldcard/firmware/pull/694" />
-                  <SourceLink label="Merged RNG path build check — source only" href="https://github.com/Coldcard/firmware/pull/700" />
-                  <SourceLink label="Merged seed-generation redesign — source only" href="https://github.com/Coldcard/firmware/pull/727" />
+                  <SourceLink label="5.6.1 seed-generation release notes" href="https://github.com/Coldcard/firmware/blob/master/releases/History-Mk.md#561---2026-08-20" />
                 </div>
               </section>
 
@@ -649,35 +612,16 @@ export function EntropyStudy() {
                 <div className="mt-3 border-t border-white/10">
                   <SourceLink label="Official 4.0.0 version history" href="https://coldcard.com/docs/version-history/#version-400-mar-17-2021" />
                   <SourceLink label="4.0.0 seed-generation source" href="https://github.com/Coldcard/firmware/blob/75addaefcb5b1861e1c8986195a448ac3f94a303/shared/seed.py#L348-L359" />
-                  <SourceLink label="Signed 4.0.0 build / 17:20" href="https://github.com/Coldcard/firmware/blob/38f4e177c928fffc7c1378aac67f7dead8befe80/releases/signatures.txt#L5" />
-                  <SourceLink label="Signed 4.0.0 build / 17:24" href="https://github.com/Coldcard/firmware/blob/75addaefcb5b1861e1c8986195a448ac3f94a303/releases/signatures.txt#L5" />
+                  <SourceLink label="Signed 4.0.0 build record" href="https://github.com/Coldcard/firmware/blob/75addaefcb5b1861e1c8986195a448ac3f94a303/releases/signatures.txt#L5" />
                   <SourceLink label="Signed Mk3 5.0.1 and 5.0.3 builds" href="https://github.com/Coldcard/firmware/blob/d2acc4380b5ffcb10cf6ad1bc828a04794fd0c24/releases/signatures.txt#L8-L15" />
-                  <SourceLink label="Mk3 5.0.1 seed-generation source" href="https://github.com/Coldcard/firmware/blob/e909bc0326feb63ce17891a8d14b0966996e4f5d/shared/seed.py#L370" />
-                  <SourceLink label="Mk3 5.0.3 seed-generation source" href="https://github.com/Coldcard/firmware/blob/fd83de540a0edd6f9bc6efb2626f6b1b858f551d/shared/seed.py#L370" />
                 </div>
               </section>
 
               <section>
                 <h3 className="font-serif text-lg text-white">Reported on-chain activity</h3>
                 <div className="mt-3 border-t border-white/10">
-                  <SourceLink label="Galaxy: revised first wave" href="https://x.com/glxyresearch/status/2083560956416741448" />
-                  <SourceLink label="Galaxy: three-wave estimate" href="https://x.com/glxyresearch/status/2083623500183421043" />
-                  <SourceLink label="Galaxy: how the waves were identified" href="https://x.com/glxyresearch/status/2083967080911470640" />
-                  <SourceLink label="Galaxy: limits of the classification" href="https://x.com/glxyresearch/status/2083623504285421622" />
-                  <SourceLink label="Alex Thorn: provisional fourth cluster" href="https://x.com/intangiblecoins/status/2084117621864046698" />
-                  <SourceLink label="Reported collection address" href="https://mempool.space/address/bc1qnk4zh9qcnap2mycp56qjrgza3cc8ylrh8fecp0" />
-                  <SourceLink label="Reported consolidation transaction" href="https://mempool.space/tx/0c6bf853a645b699a3b2cd6d8e3c44cf1a02a16f538df08212a44753f75d9d01" />
-                </div>
-              </section>
-
-              <section className="lg:col-span-2">
-                <h3 className="font-serif text-lg text-white">Cryptographic background</h3>
-                <div className="mt-3 grid border-t border-white/10 sm:grid-cols-2">
-                  <SourceLink label="BIP-39 specification" href="https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki" />
-                  <SourceLink label="Bitcoin.org Android RNG alert" href="https://bitcoin.org/en/alert/2013-08-11-android" />
-                  <SourceLink label="FPGA HMAC-SHA512 study" href="https://cacr.uwaterloo.ca/techreports/2011/cacr2011-10.pdf" />
-                  <SourceLink label="FPGA wallet-pipeline study" href="https://ietresearch.onlinelibrary.wiley.com/doi/10.1049/blc2.70028" />
-                  <SourceLink label="GPU PBKDF2 study" href="https://www.usenix.org/system/files/conference/woot16/woot16-paper-ruddick.pdf" />
+                  <SourceLink label="Galaxy: high-confidence loss estimate" href="https://www.galaxy.com/insights/research/coldcard-exploit-abates-as-total-losses-climb-to-at-least-1700-btc" />
+                  <SourceLink label="TRM Labs incident analysis" href="https://www.trmlabs.com/resources/blog/the-largest-hardware-wallet-exploit-of-2026-inside-the-usd-116-million-coldcard-hack" />
                 </div>
               </section>
             </div>
