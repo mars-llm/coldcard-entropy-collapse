@@ -17,24 +17,24 @@ const TOY_SPACE = 64;
 const STAGES = [
   {
     label: '1',
-    nav: 'Choose one',
-    title: 'The browser picks one value from 64.',
-    body: 'A real wallet should have vastly more possible starting values.',
-    action: 'Show all 64',
+    nav: 'Pick one',
+    title: 'This toy wallet can begin in only 64 ways.',
+    body: 'Each choice produces a different 256-bit value. The value is long, but only 64 results are possible.',
+    action: 'Show the full list',
   },
   {
     label: '2',
-    nav: 'See all 64',
-    title: 'These are all 64 possible starting values.',
-    body: 'Because the list is small, every value can be checked.',
-    action: 'Set up the check',
+    nav: 'Show all',
+    title: 'An attacker can build the same list.',
+    body: 'When the list is this small, every possible result can be calculated in advance.',
+    action: 'Choose a target',
   },
   {
     label: '3',
-    nav: 'Try each one',
-    title: 'Try each value until the result matches.',
-    body: 'The demo compares SHA-256 results. A real wallet search would derive addresses and compare them with public wallet data.',
-    action: 'Start checking',
+    nav: 'Check each',
+    title: 'Check the list until one result matches.',
+    body: 'This demo compares SHA-256 results. A real wallet search would derive wallet addresses and compare them with public Bitcoin data.',
+    action: 'Run the search',
   },
 ] as const;
 
@@ -48,7 +48,7 @@ const TIMELINE = [
   },
   {
     date: '11 March 2022',
-    title: 'Later models added another source, but kept too little of it',
+    title: 'Later models added secure-element data, but retained only four bytes',
     body: 'Mk4, Mk5, and Q also used data from two secure elements. The affected path kept only four bytes of the result.',
     sourceHref: 'https://github.com/Coldcard/firmware/commit/01cb43f7e87cc806963a74cbe0fcb4155f23a2a3',
     sourceLabel: 'Reseed change',
@@ -62,7 +62,7 @@ const TIMELINE = [
   },
   {
     date: '31 July–3 September 2026',
-    title: 'Coinkite fixed the route, then added more checks',
+    title: 'Coinkite fixed seed creation, then added more safeguards',
     body: 'The first hotfix repaired seed creation. Later releases added more entropy sources, required human input, and extra checks. None of these changes repairs an old seed.',
     sourceHref: 'https://blog.coinkite.com/coldcard-firmware-update-5.6.2-1.5.2q/',
     sourceLabel: 'Current firmware announcement',
@@ -242,7 +242,7 @@ export function EntropyStudy() {
                 <span className="text-accent">03</span>
               </a>
               <a href="#mechanism" className="flex min-h-11 items-center justify-between border-b border-white/10 text-ink-muted transition-colors hover:text-white">
-                Try the demo
+                See the search
                 <span className="text-accent">04</span>
               </a>
               <a href="#sources" className="flex min-h-11 items-center justify-between text-ink-muted transition-colors hover:text-white">
@@ -260,7 +260,7 @@ export function EntropyStudy() {
                 <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">For COLDCARD owners / Start here</p>
                 <h2 className="mt-3 font-serif text-3xl leading-tight text-white">Could this affect my wallet?</h2>
                 <p className="mt-3 max-w-2xl font-sans text-sm leading-relaxed text-ink-muted">
-                  Check the firmware that created the seed—not only what is installed now. Updating or changing devices does not repair an affected seed. A seed created elsewhere and later imported did not pass through this bug.
+                  What matters is the firmware used to create the seed—not the version installed today. Updating firmware or moving the same seed to another device does not repair it. A seed created elsewhere and later imported did not pass through this bug.
                 </p>
               </div>
               <a
@@ -277,8 +277,8 @@ export function EntropyStudy() {
             <div className="mt-9 border-y border-accent/35">
               <div className="grid grid-cols-[7rem_1fr_1fr] gap-3 border-b border-accent/25 py-3 font-mono text-[10px] uppercase tracking-[0.14em] text-accent sm:grid-cols-[10rem_1fr_1fr]">
                 <span>Model</span>
-                <span>Seed made on</span>
-                <span>Use now</span>
+                <span>Firmware used for seed</span>
+                <span>Current firmware</span>
               </div>
               <div className="grid grid-cols-[7rem_1fr_1fr] gap-3 border-b border-accent/20 py-4 font-sans text-sm sm:grid-cols-[10rem_1fr_1fr]">
                 <strong className="font-normal text-white">Mk2 / Mk3</strong>
@@ -308,8 +308,8 @@ export function EntropyStudy() {
               </li>
               <li className="border-b border-accent/25 py-5 lg:border-b-0 lg:border-r lg:px-6">
                 <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-accent">02 / Replace</p>
-                <h3 className="mt-2 font-serif text-lg text-white">Create and check a new seed.</h3>
-                <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">Use New Wallet. Verify the backup, fingerprint, and a receive address. Do not restore the old seed.</p>
+                <h3 className="mt-2 font-serif text-lg text-white">Create a replacement seed and check the backup.</h3>
+                <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">Choose New Wallet. Check the backup, wallet fingerprint, and a receive address. Do not restore the old seed.</p>
               </li>
               <li className="py-5 lg:pl-6">
                 <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-accent">03 / Move</p>
@@ -320,7 +320,7 @@ export function EntropyStudy() {
 
             <details className="group mt-7 border-y border-accent/35">
               <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-5 py-3">
-                <span className="font-serif text-lg text-white">Do dice, a passphrase, or multisig change this?</span>
+                <span className="font-serif text-lg text-white">What if I used dice, a passphrase, or multisig?</span>
                 <span className="flex size-9 shrink-0 items-center justify-center border border-accent/70 font-mono text-base text-white transition-transform group-open:rotate-45 group-open:bg-accent group-open:text-canvas" aria-hidden="true">+</span>
               </summary>
               <div className="grid gap-0 border-t border-accent/25 pb-2 lg:grid-cols-3">
@@ -330,7 +330,7 @@ export function EntropyStudy() {
                 </div>
                 <div className="border-b border-accent/20 py-5 lg:border-b-0 lg:border-r lg:px-5">
                   <h3 className="font-serif text-base text-white">Strong BIP-39 passphrase</h3>
-                  <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">This is an extra secret, not the PIN. It may slow an attacker, but it does not repair the seed. Coinkite still advises replacing an affected seed.</p>
+                  <p className="mt-2 font-sans text-sm leading-relaxed text-ink-muted">A strong, unique passphrase adds a separate secret. It is not the PIN and does not repair the seed. Coinkite still advises replacing an affected seed.</p>
                 </div>
                 <div className="py-5 lg:pl-5">
                   <h3 className="font-serif text-base text-white">Multisig or another spending policy</h3>
@@ -350,9 +350,9 @@ export function EntropyStudy() {
           <div className="mx-auto max-w-6xl">
             <div className="max-w-2xl">
               <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">What went wrong</p>
-              <h2 className="mt-3 font-serif text-3xl leading-tight text-white">The firmware bypassed the hardware RNG when it created a seed.</h2>
+              <h2 className="mt-3 font-serif text-3xl leading-tight text-white">During seed creation, the firmware bypassed the hardware RNG.</h2>
               <p className="mt-3 font-sans text-sm leading-relaxed text-ink-muted">
-                The bug was not in the random-number chip. A 2021 code change sent new-wallet creation to a predictable software generator instead.
+                The hardware generator still worked. A 2021 code change sent new-seed creation to a predictable software fallback instead.
               </p>
             </div>
 
@@ -370,7 +370,7 @@ export function EntropyStudy() {
             </div>
 
             <div className="mt-7 grid gap-4 border-l-2 border-accent pl-5 sm:grid-cols-[12rem_1fr] sm:gap-8">
-              <p className="font-serif text-lg text-white">So how could an offline wallet be stolen?</p>
+              <p className="font-serif text-lg text-white">How could an offline wallet be stolen?</p>
               <p className="max-w-3xl font-sans text-sm leading-relaxed text-ink-muted">
                 The seed was weak from the moment it was created. An attacker could reproduce possible seeds on another computer and use public Bitcoin addresses to see when a guess was right. They never needed the COLDCARD. Bitcoin itself was not broken.
               </p>
@@ -382,7 +382,7 @@ export function EntropyStudy() {
           <div className="mx-auto max-w-6xl">
             <div className="max-w-2xl">
               <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">What happened</p>
-              <h2 className="mt-3 font-serif text-3xl text-white">The bug shipped in 2021. The fix arrived in 2026.</h2>
+              <h2 className="mt-3 font-serif text-3xl text-white">The bug shipped in 2021 and was fixed in 2026.</h2>
             </div>
 
             <ol className="relative mt-10 border-l border-white/20">
@@ -415,10 +415,10 @@ export function EntropyStudy() {
         <section id="mechanism" className="scroll-mt-20 border-b border-white/10 px-4 py-12 md:px-8 md:py-16">
           <div className="mx-auto max-w-6xl">
             <div className="max-w-2xl">
-              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">See how the search works</p>
-              <h2 className="mt-3 font-serif text-3xl leading-tight text-white">Hide one value in a list of 64. Then find it.</h2>
+              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">What a small search space means</p>
+              <h2 className="mt-3 font-serif text-3xl leading-tight text-white">A long secret can still come from a short list.</h2>
               <p className="mt-3 font-sans text-sm leading-relaxed text-ink-muted">
-                This is a safe, cut-down example. It checks made-up values one by one and creates no Bitcoin keys or addresses.
+                This demonstration starts with 64 choices. Each produces a different 256-bit value. It creates no Bitcoin keys or addresses.
               </p>
             </div>
 
@@ -534,11 +534,13 @@ export function EntropyStudy() {
           <summary className="mx-auto flex min-h-28 max-w-6xl cursor-pointer list-none items-center justify-between gap-6 py-5">
             <div>
               <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">Evidence and caveats</p>
-              <p className="mt-2 font-serif text-xl text-white">Sources and technical detail</p>
-              <p className="mt-2 font-sans text-sm text-ink-muted">Code, incident counts, open questions, and source links.</p>
+              <p className="mt-2 font-serif text-xl text-white">Sources and technical details</p>
+              <p className="mt-2 font-sans text-sm text-ink-muted">Firmware code, reported losses, open questions, and links.</p>
             </div>
-            <span className="flex size-11 shrink-0 items-center justify-center border border-accent/70 font-mono text-lg text-white transition-transform group-hover:bg-accent group-hover:text-canvas group-open:rotate-45 group-open:bg-accent group-open:text-canvas" aria-hidden="true">
-              +
+            <span className="flex shrink-0 items-center gap-3 font-mono text-[9px] uppercase tracking-[0.14em] text-ink-muted" aria-hidden="true">
+              <span className="group-open:hidden">Open</span>
+              <span className="hidden group-open:inline">Close</span>
+              <span className="flex size-11 items-center justify-center border border-accent/70 text-lg text-white transition-transform group-hover:bg-accent group-hover:text-canvas group-open:rotate-45 group-open:bg-accent group-open:text-canvas">+</span>
             </span>
           </summary>
           <div className="mx-auto max-w-6xl border-t border-white/10 py-8">
@@ -556,7 +558,7 @@ export function EntropyStudy() {
                 <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">What the code shows</p>
                 <div className="mt-4 space-y-4 font-sans text-sm leading-relaxed text-ink-muted">
                   <p>
-                    MicroPython&apos;s fallback began from limited device and timing data. Earlier calls also changed its later output. That made the route deterministic, but the public source does not show that every device chose from one shared 32-bit pool of complete seeds.
+                    MicroPython&apos;s fallback started from limited device and timing data. Earlier calls changed the later output too. The route was deterministic, but the public code does not show every device choosing from one shared pool of 2³² complete seeds.
                   </p>
                   <p>
                     Coinkite lists Mk2/Mk3 4.0.1–4.1.9. Public source and signed release records also show the affected route in 4.0.0 and in Mk3 builds 5.0.1-mk3 and 5.0.3-mk3. That is why the table above includes all three.
@@ -571,14 +573,14 @@ export function EntropyStudy() {
                 <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">What has not been measured</p>
                 <div className="mt-4 space-y-4 font-sans text-sm leading-relaxed text-ink-muted">
                   <p>
-                    Coinkite estimates about 40 bits for affected Mk2/Mk3 seeds and about 72 bits for Mk4/Mk5/Q. Block counted 2³² possibilities for one later-model input only after fixing the rest of the state. No public end-to-end benchmark turns those estimates into a reliable attack time for later models.
+                    Coinkite estimates about 40 bits for affected Mk2/Mk3 seeds and about 72 bits for Mk4/Mk5/Q. Block counted 2³² possibilities for one later-model input only after assuming the other state was already known. No public end-to-end benchmark provides a reliable attack time for later models.
                   </p>
                 </div>
               </section>
             </div>
 
             <p className="mt-9 max-w-3xl border-t border-white/10 pt-6 font-sans text-sm leading-relaxed text-ink-muted">
-              The demo hashes 64 made-up values. It never sees your wallet data and does not run COLDCARD firmware.
+              The demo hashes 64 fictional values. It never reads wallet data and does not run COLDCARD firmware.
             </p>
 
             <div className="mt-8 grid gap-8 border-t border-white/10 pt-8 lg:grid-cols-2">
@@ -656,7 +658,7 @@ function RandomBeginning({ bits, onRegenerate }: { bits: string[]; onRegenerate:
   return (
     <div className="grid min-h-[21rem] items-center gap-8 lg:grid-cols-[1fr_auto_1.15fr]">
       <div>
-        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted">One randomly chosen value</p>
+        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted">One of 64 possible toy secrets</p>
         <div className="mt-5 flex h-44 items-end gap-[2px] border-y border-white/15 py-5" aria-hidden="true">
           {bars.map((value, index) => (
             <motion.span
@@ -682,7 +684,7 @@ function RandomBeginning({ bits, onRegenerate }: { bits: string[]; onRegenerate:
       <ArrowRight className="hidden text-ink-muted lg:block" size={20} strokeWidth={1.2} aria-hidden="true" />
 
       <div>
-        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted">The same value shown as 256 bits</p>
+        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted">The same toy secret shown as 256 bits</p>
         <BitField bits={bits} />
       </div>
     </div>
@@ -693,7 +695,7 @@ function LimitedBeginnings({ targetPattern }: { targetPattern: string[] }) {
   return (
     <div className="grid min-h-[21rem] items-center gap-10 lg:grid-cols-[1.1fr_auto_0.9fr]">
       <div>
-        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">Every possible value in this demo</p>
+        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">All possible toy secrets</p>
         <p className="mt-3 font-serif text-2xl text-white">64 in total</p>
         <CandidatePool />
       </div>
@@ -701,13 +703,13 @@ function LimitedBeginnings({ targetPattern }: { targetPattern: string[] }) {
       <ArrowRight className="hidden text-accent lg:block" size={20} strokeWidth={1.2} aria-hidden="true" />
 
       <div className="border-y border-white/15 py-6">
-        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted">Result to match</p>
-        <p className="mt-3 font-serif text-2xl text-white">This is what we are looking for</p>
+        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted">The result linked to one hidden secret</p>
+        <p className="mt-3 font-serif text-2xl text-white">Find which secret produced it</p>
         <div className="mt-6">
           <CluePattern pattern={targetPattern} />
         </div>
         <p className="mt-5 max-w-sm font-sans text-xs leading-relaxed text-ink-muted">
-          One of the 64 values produces this result. To find it, the list has to be checked.
+          One of the 64 secrets produces this result. Finding it only requires checking the list.
         </p>
       </div>
     </div>

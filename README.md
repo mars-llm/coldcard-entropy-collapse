@@ -1,20 +1,14 @@
 # Entropy Collapse
 
-A visual case study of a COLDCARD seed-generation failure. A firmware integration mistake sent new-wallet creation through a deterministic software generator instead of the intended hardware-randomness path. The site shows why an offline wallet can still be exposed when the seed was created from too few plausible possibilities.
+[Read the case study](https://mars-llm.github.io/coldcard-entropy-collapse/)
 
-The demonstration uses SHA-256 and a 64-candidate toy space. It does not generate wallet material, derive Bitcoin addresses, or reproduce the affected firmware. The page keeps practical guidance separate from the walkthrough and directs affected owners to [Coinkite's current migration guide](https://coldcard.com/security/migrate), which links the correct download for each model and release track.
+In affected COLDCARD firmware, new-wallet creation used a deterministic software fallback instead of the intended hardware-randomness path. Seeds created through that path could be searched offline, even though the device itself never went online.
 
-Coinkite's advisory lists Mk2/Mk3 4.0.1–4.1.9. Public source and signed release records also show the affected route in 4.0.0 and in two old Mk3 builds named 5.0.1-mk3 and 5.0.3-mk3. Fixed releases begin with Mk2/Mk3 4.2.0, Mk4/Mk5 5.6.0, Q 1.5.0Q, and Edge 6.6.0X/6.6.0QX. The current recommended releases are Mk3 4.2.0, Mk4/Mk5 5.6.2, Q 1.5.2Q, and Edge 6.6.1X/6.6.1QX. Updating corrects future seed generation; it does not repair an existing seed.
+The page starts with current owner guidance, lists the affected and fixed firmware ranges, traces the code change, and shows why a long secret can still be weak when it comes from a short list. Its demonstration uses 64 fictional values and the browser's SHA-256 implementation. It does not create wallet material, derive Bitcoin addresses, or run COLDCARD firmware.
 
-Coinkite does not consider a seed at risk from this fault alone if at least 50 fair, independent, private dice rolls were added during seed creation. That exception depends on the physical rolls—not only the count once shown on screen. A strong, unique BIP-39 passphrase adds a separate barrier, but does not repair the seed. Coinkite still advises replacing an affected seed.
+Updating fixes future seed creation; it does not repair an affected existing seed. The page links owners to Coinkite's current [security status](https://coldcard.com/security/status) and [migration guide](https://coldcard.com/security/migrate).
 
-Mk4/Mk5 5.6.1 and Q 1.5.1Q shipped a redesigned seed path that combines fresh output from the processor and both secure elements with required user input. The releases also added boot and build checks. Coinkite's status page documents targeted checks of the fixed release lines and says they are not a complete audit.
-
-On 14 August, Galaxy Research said reports from 190 victims had helped it attribute 1,778.84 BTC from more than 8,600 addresses with high confidence. It found no confirmed attacker activity after 6 August. The count may still change as more victims report losses.
-
-Coinkite estimates about 40 bits for affected Mk2/Mk3 seeds and about 72 bits for Mk4/Mk5/Q. No public end-to-end benchmark establishes a reliable attack time for later models.
-
-Built to explain the failure, not to reproduce an attack. This project is not affiliated with Coinkite or COLDCARD.
+Reported losses, entropy estimates, and affected version details remain in the evidence section with their sources and limits. This project is not affiliated with Coinkite or COLDCARD.
 
 ## Local development
 

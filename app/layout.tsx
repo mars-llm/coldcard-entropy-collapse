@@ -4,7 +4,7 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Entropy Collapse | The COLDCARD seed-generation failure explained',
-  description: 'How affected COLDCARD firmware weakened seed generation, which wallets may be affected, and what owners can do now.',
+  description: 'Which COLDCARD seeds may be affected, how the firmware weakened seed generation, and how owners can replace an affected seed safely.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
