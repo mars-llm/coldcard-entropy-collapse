@@ -59,3 +59,7 @@ Pushing `main` runs the Node 24 deployment workflow. The published site is avail
 - [Bitcoin.org: Android secure-random vulnerability affecting software wallets](https://bitcoin.org/en/alert/2013-08-11-android)
 - [COLDCARD firmware source](https://github.com/Coldcard/firmware)
 - [Cryptographic Arts](https://mars-llm.github.io/hal-finney-trading-algorithms/)
+
+## License
+
+[0BSD](LICENSE). You may use, copy, modify or distribute this project for any purpose, without attribution. The license includes warranty and liability disclaimers.
