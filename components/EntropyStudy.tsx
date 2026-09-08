@@ -196,7 +196,7 @@ export function EntropyStudy() {
               transition={{ duration: shouldReduceMotion ? 0 : 0.35 }}
             >
               <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-accent">
-                Cold storage security case study / Updated 7 September 2026
+                Cold storage security case study / Updated 8 September 2026
               </p>
               <h1 className="mt-4 font-serif text-3xl leading-tight text-white sm:text-4xl lg:text-5xl">
                 How a firmware mistake weakened COLDCARD seed generation.
