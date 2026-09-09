@@ -4,7 +4,7 @@
 
 In affected COLDCARD firmware, new-wallet creation used a deterministic software fallback instead of the intended hardware-randomness path. Seeds created through that path could be searched offline, even though the device itself never went online.
 
-The page starts with current owner guidance, lists the affected and fixed firmware ranges, traces the code change, and shows why a long secret can still be weak when it comes from a short list. Its demonstration uses 64 fictional values and the browser's SHA-256 implementation. It does not create wallet material, derive Bitcoin addresses, or run COLDCARD firmware.
+The page starts with current owner guidance, lists the affected and fixed firmware ranges, traces the code change, and shows why a long secret can still be weak when it comes from a short list. A 64-value example makes that search visible without handling wallet keys or addresses.
 
 Updating fixes future seed creation; it does not repair an affected existing seed. The page links owners to Coinkite's current [security status](https://coldcard.com/security/status) and [migration guide](https://coldcard.com/security/migrate).
 

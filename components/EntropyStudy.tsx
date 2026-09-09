@@ -33,7 +33,7 @@ const STAGES = [
     label: '3',
     nav: 'Check each',
     title: 'Check the list until one result matches.',
-    body: 'This demo compares SHA-256 results. A real wallet search would derive wallet addresses and compare them with public Bitcoin data.',
+    body: 'Here the match is a SHA-256 result. Against a real wallet, an attacker would derive addresses and compare them with public Bitcoin data.',
     action: 'Run the search',
   },
 ] as const;
@@ -254,7 +254,7 @@ export function EntropyStudy() {
                 </a>
               </div>
               <p className="mt-5 max-w-2xl font-sans text-xs leading-relaxed text-ink-muted">
-                Unaffiliated with Coinkite or COLDCARD. This page explains the failure; affected owners should follow Coinkite&apos;s{' '}
+                Unaffiliated with Coinkite or COLDCARD. If your seed may be affected, follow Coinkite&apos;s{' '}
                 <a href="https://coldcard.com/security/migrate" target="_blank" rel="noreferrer" className="text-white underline decoration-accent underline-offset-4 hover:text-accent">
                   migration guide
                 </a>.
@@ -465,10 +465,7 @@ export function EntropyStudy() {
               <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-accent">What a small search space means</p>
               <h2 className="mt-3 font-serif text-3xl leading-tight text-white">A long secret can still come from a short list.</h2>
               <p className="mt-3 font-sans text-sm leading-relaxed text-ink-muted">
-                This demonstration starts with 64 fictional choices. It creates no Bitcoin keys or addresses and does not run COLDCARD firmware.
-              </p>
-              <p className="mt-4 border-l-2 border-accent pl-4 font-sans text-sm leading-relaxed text-ink">
-                The 64 choices and animation speed do not represent the real COLDCARD search space or attack time. No public end-to-end benchmark establishes a reliable attack time for later models.{' '}
+                The example uses 64 possible starting points so the search is easy to see. Real affected wallets had much larger search spaces, and no public end-to-end benchmark gives a reliable search time for later models.{' '}
                 <a href="#search-limits" onClick={openSources} className="text-white underline decoration-accent underline-offset-4 hover:text-accent">Evidence and limits</a>.
               </p>
             </div>
@@ -579,9 +576,9 @@ export function EntropyStudy() {
         <details ref={sourcesRef} id="sources" className="group scroll-mt-20 border-b border-white/10 bg-white/[0.035] px-4 md:px-8">
           <summary className="mx-auto flex min-h-28 max-w-6xl cursor-pointer list-none items-center justify-between gap-6 py-5">
             <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-accent">Evidence and caveats</p>
-              <p className="mt-2 font-serif text-xl text-white">Sources and technical details</p>
-              <p className="mt-2 font-sans text-sm text-ink-muted">Firmware code, reported losses, open questions, and links.</p>
+              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-accent">Check the evidence</p>
+              <p className="mt-2 font-serif text-xl text-white">Sources and open questions</p>
+              <p className="mt-2 font-sans text-sm text-ink-muted">Firmware code, reported losses and what is still unknown.</p>
             </div>
             <span className="flex shrink-0 items-center gap-3 font-mono text-[11px] uppercase tracking-[0.14em] text-ink-muted" aria-hidden="true">
               <span className="group-open:hidden">Open</span>
